@@ -7,7 +7,9 @@
  *   `false`) + un avertissement journalisé façon `deps` ;
  * - une sonde de visibilité honnête : `no-right` n'est jamais rapporté comme
  *   un trou — la sonde dit ce que l'app n'a pas pu regarder (§10, §21) ;
- * - aucune preuve n'est recopiée : on référence (§18).
+ * - aucune preuve n'est recopiée : on référence (§18) ;
+ * - **la conversion des statuts est unique** (`normalizeStatus`) : le graphe,
+ *   Bitbucket, les commentaires et la CI l'utilisent tous, jamais une copie.
  *
  * C'est le seul endroit où la forme des journaux et des sondes est écrite ;
  * les six adaptateurs la réutilisent (zéro duplication).
@@ -58,6 +60,41 @@ export async function safe<T>(
     warn(`${label} : repli sur le vide`, error instanceof Error ? error.message : String(error));
     return fallback;
   }
+}
+
+/**
+ * Statut d'un acte de vérification : la **même** conversion pour le graphe,
+ * Bitbucket, les commentaires et la CI (§7). Un statut inconnu reste
+ * `unknown` — jamais un `passed` par défaut : une couverture qui ne dit pas la
+ * vérité est pire qu'une couverture absente (§22).
+ */
+export type VerificationStatus = 'passed' | 'failed' | 'skipped' | 'ignored' | 'unknown';
+
+/**
+ * Jetons acceptés, tous sources confondues (`SUCCESSFUL`, `success`,
+ * `passed`, `IGNORED`, `not_run`, …). Les jetons inconnus tombent sur
+ * `unknown` : l'app ne devine pas l'issue d'un test qu'elle n'a pas lu.
+ */
+const STATUS_BY_TOKEN: Record<string, VerificationStatus> = {
+  passed: 'passed', pass: 'passed', success: 'passed', successful: 'passed', green: 'passed', ok: 'passed',
+  failed: 'failed', fail: 'failed', failure: 'failed', failing: 'failed', error: 'failed', broken: 'failed', red: 'failed',
+  skipped: 'skipped', skip: 'skipped', pending: 'skipped', blocked: 'skipped',
+  stopped: 'skipped', cancelled: 'skipped', canceled: 'skipped', aborted: 'skipped',
+  ignored: 'ignored', ignore: 'ignored', disabled: 'ignored', notrun: 'ignored',
+};
+
+/**
+ * Le jeton d'un statut brut : minuscules, sans séparateur. Partagé pour que
+ * la normalisation soit écrite **une seule fois** dans tout le lot.
+ */
+export function statusToken(raw: string | undefined | null): string {
+  if (typeof raw !== 'string') return '';
+  return raw.trim().toLowerCase().replace(/[\s_-]+/g, '');
+}
+
+/** Normalise un statut venu d'une source quelconque vers le vocabulaire §7. */
+export function normalizeStatus(raw: string | undefined | null): VerificationStatus {
+  return STATUS_BY_TOKEN[statusToken(raw)] ?? 'unknown';
 }
 
 /**
