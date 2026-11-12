@@ -1,0 +1,124 @@
+name: Site (GitHub Pages)
+
+# Publie le site public sur GitHub Pages : https://baptistefaisy.github.io/trame/
+#
+# Le site est construit par Vite depuis `site/` ; il embarque le VRAI moteur de
+# l'app (`src/domain`, `src/sample`, `src/i18n`) et le projet de démonstration
+# semé. Toute modification de ces sources peut changer le site : le workflow se
+# déclenche donc aussi sur ces chemins, pas seulement sur `site/**`.
+#
+# Budget : 5 minutes par job (règle CI de fin octobre 2026). Le runner est
+# persistant : `node_modules` est conservé d'un run à l'autre et l'installation
+# n'a lieu que si `package-lock.json` change (même mécanique que `ci.yml`).
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/site.yml"
+  workflow_dispatch:
+
+# Un seul déploiement à la fois ; on n'annule pas un déploiement en cours
+# (un site à moitié publié vaut mieux qu'un site cassé).
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: build-site
+    runs-on: [self-hosted, linux, x64, trame-worker]
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          clean: false
+
+      - name: Nettoyage du workspace (node_modules conservé)
+        shell: bash
+        run: git clean -ffdx -e /node_modules -e /.npm-state -e /site/dist
+
+      - name: Dépendances (magasin chaud, installation seulement si le lock change)
+        shell: bash
+        run: |
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/bin:$PATH"
+          export NPM_CONFIG_CACHE="$HOME/.npm-ci-cache"
+          LOCK_HASH="$(sha256sum package-lock.json | cut -d' ' -f1)"
+          MARKER="node_modules/.trame-lock-hash"
+          STORE="$HOME/.trame-ci-deps/$LOCK_HASH"
+          if [ -d node_modules ] && [ "$LOCK_HASH" = "$(cat "$MARKER" 2>/dev/null)" ]; then
+            echo "node_modules deja a jour - installation sautee"
+          elif [ -d "$STORE/node_modules" ]; then
+            rm -rf node_modules
+            cp -al "$STORE/node_modules" node_modules
+            printf '%s' "$LOCK_HASH" > "$MARKER"
+            echo "node_modules copie depuis le magasin $STORE"
+          else
+            echo "installation des dependances (a froid)..."
+            npm ci --prefer-offline --no-audit --no-fund
+            printf '%s' "$LOCK_HASH" > "$MARKER"
+            mkdir -p "$STORE" && rm -rf "$STORE/node_modules" \
+              && cp -al node_modules "$STORE/node_modules" \
+              && echo "magasin alimente : $STORE"
+          fi
+
+      - name: Types du site (tsc -p site/tsconfig.json)
+        run: npm run site:typecheck
+
+      - name: Construction du site (vite build)
+        run: npm run site:build
+
+      - name: "Garde — ressources du site servies sous la base Pages"
+        shell: bash
+        run: |
+          # Pages sert le site sous /trame/ : une URL absolue qui part de la
+          # racine (/assets/…) casserait la page. On n'accepte que les URL
+          # relatives ou préfixées par la base.
+          python3 - <<'PY'
+          import pathlib
+          import re
+          import sys
+
+          BASE = "/trame/"
+          mauvaises = []
+          for fichier in sorted(pathlib.Path("site/dist").rglob("*.html")):
+              texte = fichier.read_text(encoding="utf-8")
+              for trouve in re.finditer(r'(?:href|src)="(/[^"]*)"', texte):
+                  url = trouve.group(1)
+                  if not url.startswith(BASE):
+                      mauvaises.append(f"{fichier}: {url}")
+          if mauvaises:
+              for ligne in mauvaises[:10]:
+                  print(f"::error::URL absolue hors base Pages — {ligne}")
+              sys.exit(1)
+          print(f"OK : toutes les URL absolues du build portent la base {BASE}")
+          PY
+
+      - name: Artefact Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    name: deploy-pages
+    needs: build
+    runs-on: [self-hosted, linux, x64, trame-worker]
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publication sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
