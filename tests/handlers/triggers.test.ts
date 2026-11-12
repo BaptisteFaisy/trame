@@ -65,7 +65,7 @@ describe('le trigger d’un ticket modifié', () => {
     expect(criteria.length).toBeGreaterThanOrEqual(3);
     expect(criteria.map((criterion) => criterion.criterionKey)).toEqual(['AC-1', 'AC-2', 'AC-3']);
     expect(criteria[0]?.textHash).toHaveLength(16);
-    expect(deps.queue.messages).toHaveLength(1);
+    expect((deps.queue as FakeQueue).messages).toHaveLength(1);
   });
 
   it('inscrit une version quand le texte du critère change', async () => {
@@ -88,7 +88,7 @@ describe('le trigger d’un ticket modifié', () => {
   it('ne tisse rien et ne lève pas si le ticket est illisible', async () => {
     const deps = makeDeps();
     await onJiraEvent({ issueKey: 'INCONNU' }, deps);
-    expect(deps.log.has('illisible')).toBe(true);
+    expect((deps.log as FakeLogger).has('illisible')).toBe(true);
   });
 });
 
@@ -109,7 +109,7 @@ describe('le recalcul nocturne', () => {
     (deps.jira as FakeJira).withIssues(ISSUE);
     await onJiraEvent({ issueKey: 'TRAME-1' }, deps);
     await onScheduledTick({}, deps);
-    expect(deps.log.has('recalcul nocturne')).toBe(true);
+    expect((deps.log as FakeLogger).has('recalcul nocturne')).toBe(true);
   });
 
   it('lit un périmètre brut (« project:TRAME ») sans se tromper de type', () => {
@@ -150,7 +150,7 @@ describe('le consumer', () => {
       { scope: 'TRAME-1', scopeType: 'ticket', mode: 'inconnu' as never },
       deps,
     );
-    expect(deps.log.has('mode inconnu')).toBe(true);
+    expect((deps.log as FakeLogger).has('mode inconnu')).toBe(true);
   });
 });
 
