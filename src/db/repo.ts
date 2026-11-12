@@ -327,6 +327,13 @@ function createMeasureStore(sql: SqlClient): StorePart {
         orderBy: 'computed_at DESC',
       }),
     putEvent: (event) => events.upsert(event),
+    listScopes: async (limit: number) => {
+      const rows = await sql.query<Row>(
+        'SELECT DISTINCT scope FROM coverage_event ORDER BY scope LIMIT ?',
+        [Math.max(1, limit)],
+      );
+      return rows.map((row) => String(row['scope'] ?? '')).filter(Boolean);
+    },
     listEvents: (scope: string, limit: number) =>
       events.select(eq('scope', scope), { orderBy: 'at DESC', limit }),
     getCursor: async (scope: string, mode: Cursor['mode']) => {

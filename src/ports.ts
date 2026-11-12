@@ -293,6 +293,8 @@ export interface TrameStore {
   lastWitness(scope: string, scopeType: ScopeType): Promise<Witness | null>;
 
   putEvent(event: CoverageEvent): Promise<void>;
+  /** Les périmètres connus de l'app : le recalcul nocturne les parcourt. */
+  listScopes(limit: number): Promise<string[]>;
   listEvents(scope: string, limit: number): Promise<CoverageEvent[]>;
 
   getCursor(scope: string, mode: Cursor['mode']): Promise<Cursor | null>;
