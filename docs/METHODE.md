@@ -59,3 +59,7 @@ written.
   the Mergify queue: `strict` stays `false`.
 - One self-hosted runner (`r630-trame-01`): `merge_queue.max_parallel_checks`
   is 1, speculation would starve the pull requests' CI.
+
+## Test de l’agent de conflits
+
+Version A : le texte de la branche A — il faut garder les deux apports.
