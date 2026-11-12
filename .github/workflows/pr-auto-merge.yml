@@ -206,18 +206,13 @@ on:
     branches: [main]
   schedule:
     - cron: '*/15 * * * *'
-  workflow_run:
-    # `ci-budget` est un job de `CI` depuis le 29/10 : `CI` couvre les trois
-    # checks requis. `couche0` n'y est PLUS (v26, 31/10) : il finit ~9 s après
-    # un push quand `CI` met ~115 s, donc son réveil arrivait toujours avant le
-    # verdict — il ne pouvait structurellement rien faire d'autre que constater
-    # « CI en cours ». Mesuré de 20:10 à 22:10 : 41 fins de `couche0` pour
-    # 21 runs `CI`, soit ~la moitié des 69 balayages de la fenêtre.
-    # Ce qui reste couvert : un `couche0` rouge arrive par la fin de `CI` de la
-    # même tête (elle est postérieure, même sans rapport entre les deux jobs),
-    # et un `couche0` réarmé seul arrive par `pull_request: edited`.
-    workflows: ["CI"]
-    types: [completed]
+  # Pas de déclencheur `workflow_run` : ce dépôt n'a qu'UN runner self-hosted
+  # (r630-trame-01), et Mergify est le seul pilote de merge. Un balayage qui
+  # repart à chaque fin de CI occupe le runner au moment exact où la file
+  # Mergify veut lancer sa CI spéculative — la file attend, les PR restent
+  # « waiting ». Les conflits sont de toute façon repris par
+  # `conflict-resolver.yml` (agent hermes sur InferHub), qui reste déclenché
+  # par le cron et par workflow_dispatch.
 
 # Un seul balayage à la fois (v16), sans annulation.
 #
