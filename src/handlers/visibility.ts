@@ -1,13 +1,18 @@
-import type { Deps } from '../ports.js';
-
-/** Écran de couverture : ce que l'app voit, ce qu'elle ne voit pas (§17).
+/**
+ * Écran : ce que l'app voit, ce qu'elle ne voit pas (§18, §22). Les quatre
+ * absences distinguées — un angle mort n'est jamais un trou du projet.
  *
- * Pas de droit != pas de données != pas de test != pas de critère (§22) — lot L9.
- * Souche : signature gelée (docs/CONTRACTS.md §3), corps à écrire.
+ * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-export async function render(
-  _deps: Deps,
-  _payload: Record<string, unknown>,
-): Promise<unknown> {
-  return { notImplemented: 'visibility' };
+import type { Deps } from '../ports.js';
+import { scopeFrom, languageFrom } from './screen.js';
+import { GRAPH_OBJECT_TYPES } from '../ports.js';
+import { buildVisibility } from '../viewmodel/visibility.js';
+
+export async function render(deps: Deps, payload: Record<string, unknown>): Promise<unknown> {
+  const scope = scopeFrom(payload) ?? { scopeType: 'project' as const, scope: String(payload['scope'] ?? 'TRAME') };
+  const language = languageFrom(payload);
+  const probes = [] as Awaited<ReturnType<Deps['graph']['probe']>>[];
+  for (const objectType of GRAPH_OBJECT_TYPES) probes.push(await deps.graph.probe(objectType));
+  return buildVisibility({ language, scope: scope.scope, scopeType: scope.scopeType, computedAt: deps.clock.now(), probes });
 }
