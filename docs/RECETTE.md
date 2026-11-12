@@ -89,7 +89,7 @@ Si `npm ci` échoue (réseau, cache vide), `npm install` fait le même travail ;
 `npm test` ne télécharge rien de plus.
 
 Le dépôt a été renommé le 12 novembre 2026 : l'ancienne adresse
-`github.com/BaptisteFaisy/trame` redirige (301) vers `github.com/Tradoooo/trame`,
+`github.com/Tradoooo/trame` redirige (301) vers `github.com/Tradoooo/trame`,
 qui est l'adresse canonique utilisée ci-dessus.
 
 Les vérifications, minute par minute :

@@ -67,7 +67,7 @@ npm run check:limits   # garde : aucun fichier > 500 lignes
 Aucun compte Atlassian, aucun réseau, aucune donnée réelle : les tests tournent
 sur des doubles en mémoire et des portes injectables (graphe, LLM, horloge).
 Le dépôt a été renommé le 12 novembre 2026 : l'adresse canonique est
-`github.com/Tradoooo/trame` (l'ancienne, `github.com/BaptisteFaisy/trame`,
+`github.com/Tradoooo/trame` (l'ancienne, `github.com/Tradoooo/trame`,
 redirige vers elle).
 Le jeu de données est le projet de démonstration du §26
 (`src/sample/demo-project.ts`) : six tickets, vingt-quatre critères, et les
