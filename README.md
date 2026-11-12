@@ -123,6 +123,17 @@ encore fonctionnels — ce sont des souches. Les lots L1 à L12 restent à livre
 - [docs/CI.md](docs/CI.md) — checks requis, runner, budget, file Mergify, pièges ;
 - [docs/CONFLICTS.md](docs/CONFLICTS.md) — l'agent de résolution de conflits InferHub.
 
+### Dossier de soumission (Codegeist 2026)
+
+- [docs/RECETTE.md](docs/RECETTE.md) — les vingt points du §24, un par un : ce que le
+  point vérifie, la commande exacte, le fichier de test, l'état réel ;
+- [docs/JUDGES.md](docs/JUDGES.md) — guide du jury : Trame en trente secondes, les
+  trois jugements, ce que l'app ne fait pas, les dix questions ;
+- [docs/VIDEO-SCRIPT.md](docs/VIDEO-SCRIPT.md) — le scénario de la vidéo, minuté
+  (0:00 → 4:45), et les quatre captures à tourner ;
+- [docs/SUBMISSION.md](docs/SUBMISSION.md) — la fiche de soumission : nom public,
+  slogan, bonus visés, architecture, ce qui est prêt, checklist.
+
 ## Licence
 
 MIT — voir [LICENSE](LICENSE).
