@@ -151,6 +151,14 @@ describe('trous — §24.12 un critère d’une zone à risque remonte dans le c
     const zoneTerm = hole.priorityTerms.find((row) => row.name === 'zone-risk');
     expect(zoneTerm?.because).toContain('zone sans antécédent');
   });
+
+  it('la zone du critère lui-même prime sur celle des actes', () => {
+    const scenario = bare();
+    scenario.criteria = [crit('AC-1', { zone: 'src/propre' } as Partial<Criterion>)];
+    scenario.verifications = [act('ver_a', { zone: 'src/autre' })];
+    const hole = holeOf(scenario, 'AC-1');
+    expect(hole.zone).toBe('src/propre');
+  });
 });
 
 describe('trous — un critère infalsifiable n’est pas un trou (§8.4)', () => {
