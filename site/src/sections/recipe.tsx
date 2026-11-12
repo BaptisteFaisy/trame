@@ -9,7 +9,7 @@ import { Section } from '../components/section.js';
 import { t } from '../i18n/index.js';
 import type { Lang, SiteKey } from '../i18n/index.js';
 
-const REPO = 'https://github.com/BaptisteFaisy/trame';
+const REPO = 'https://github.com/Tradoooo/trame';
 
 /** Les cinq étapes, et le lien qui va avec. */
 const STEPS: { title: SiteKey; body: SiteKey; href: string; link: SiteKey }[] = [

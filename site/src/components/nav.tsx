@@ -8,7 +8,7 @@ import type { ReactElement } from 'react';
 import { t } from '../i18n/index.js';
 import type { Lang } from '../i18n/index.js';
 
-export const REPO_URL = 'https://github.com/BaptisteFaisy/trame';
+export const REPO_URL = 'https://github.com/Tradoooo/trame';
 
 /** Les ancres, dans l'ordre de lecture de la page. */
 const ANCHORS: { href: string; key: Parameters<typeof t>[1] }[] = [
