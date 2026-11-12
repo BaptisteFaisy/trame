@@ -116,3 +116,20 @@ le corps de PR nomme le `## Scope`. Sur la file, un check `cancelled` ou
 5. **Un seul runner** : pas de spéculation (`max_parallel_checks: 1`), pas de
    jobs parallèles lourds, pas de réseau dans les tests de gardes — tout ce qui
    occupe `r630-trame-01` au-delà de quelques secondes retarde toutes les PR.
+6. **Runner « offline » qui dit pourtant « Listening for Jobs »** (vécu le
+   12/11 après le transfert vers l'org) : un `Runner.Listener` **orphelin**
+   tient la session (`A session for this runner already exists` dans le journal
+   du service, boucle de restart, `NRestarts` qui grimpe). GitHub voit le
+   runner `offline` et n'envoie **aucun job** : la CI ne tourne plus, donc la
+   file Mergify ne merge plus. Remède :
+   ```bash
+   ssh r630 "pgrep -af 'actions-runner-trame-01/bin/Runner.Listener'"
+   # tuer TOUS les Listener puis re-registrer avec un jeton neuf (POST) :
+   gh api -X POST repos/Tradoooo/trame/actions/runners/registration-token --jq .token
+   # sur r630 : systemctl --user stop actions-runner-trame-01 ; rm .runner
+   # .credentials .credentials_rsaparams .agent ; ./config.sh --unattended
+   # --url https://github.com/Tradoooo/trame --token <jeton> --name r630-trame-01
+   # --work _work1 --labels trame-worker,ci-node --replace ; systemctl --user start
+   ```
+   Le service doit finir sur `Listening for Jobs`, et
+   `gh api repos/Tradoooo/trame/actions/runners` doit dire `online`.
