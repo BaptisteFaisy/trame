@@ -35,9 +35,10 @@ priority_rules:
     priority: low
 
 merge_queue:
-  # 5 workers self-hosted (R630, label trame-worker) : la
-  # spéculation Mergify reste bornée à 2 pour ne pas affamer la CI des PR.
-  max_parallel_checks: 2
+  # Un seul worker self-hosted : `r630-trame-01` (label `trame-worker`).
+  # Avec un unique runner, la spéculation Mergify affamerait la CI des PR :
+  # max_parallel_checks borné à 1.
+  max_parallel_checks: 1
 
 # Auto-queue natif (produit Merge Queue) : évite de dépendre du produit
 # « Workflow Automation » (pull_request_rules), constaté désactivé le 24/10.
