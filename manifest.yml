@@ -1,0 +1,499 @@
+# Trame — the coverage of your acceptance criteria (Codegeist 2026).
+#
+# Modules of docs/CAHIER-DES-CHARGES.md §18, the fourteen MCP tools of §16 and
+# the Rovo agent « Le fil ». Handlers are the exports of src/index.ts (frozen,
+# docs/CONTRACTS.md §2): a new tool means an `action` here, a line in
+# src/handlers/dispatch.ts and one file in src/actions/. The
+# `before-closing-a-ticket` skill ships as an open document
+# (static/skill/before-closing-a-ticket/SKILL.md), quoted by the agent prompt.
+
+app:
+  # Provisional id: `forge create` writes the real one, and the lint runs on it.
+  id: ari:cloud:ecosystem::app/3dfebaa0-bb65-471b-be6b-aaee3033ed99
+  name: Trame
+  description: >-
+    Trame weaves acceptance criteria and the acts that verify them. It shows the
+    holes, the perforations — a criterion changed after being verified — and the
+    dangling threads, and it never counts a derived link as declared coverage.
+  runtime:
+    name: nodejs22.x
+    architecture: x86_64
+    memoryMB: 512
+  compatibility:
+    jira:
+      required: true
+    confluence:
+      required: false
+
+modules:
+  # Fiche critère sur le ticket (TR-14) : couverture, forces, perforations.
+  jira:issuePanel:
+    - key: criterion-panel
+      title: Criteria
+      resource: main
+      resolver:
+        function: resolver
+      render: native
+      icon: resource:icon;icon.svg
+  # Trois champs en lecture seule, écrits par l'app, exploitables en JQL (§18).
+  jira:customField:
+    - key: trame-field
+      name: Trame
+      description: Read-only weave state of the ticket, for example "4 / 6 proven".
+      type: string
+      readOnly: true
+      formatter:
+        expression: 'issue.properties["trame-label"]'
+    - key: holes-field
+      name: Holes
+      description: Number of acceptance criteria with no verification act.
+      type: number
+      readOnly: true
+      formatter:
+        expression: 'issue.properties["trame-holes"]'
+    - key: perforations-field
+      name: Perforations
+      description: Number of criteria changed after their last verification.
+      type: number
+      readOnly: true
+      formatter:
+        expression: 'issue.properties["trame-perforations"]'
+  # Carte de trame, explorateur de trous, bulletin, file de validation, écran de
+  # couverture et historique : une page, onze clés de resolver (§17).
+  jira:globalPage:
+    - key: trame-page
+      title: Trame
+      resource: main
+      resolver:
+        function: resolver
+      render: native
+      icon: resource:icon;icon.svg
+  # Trame d'un projet et zones à risque (§17).
+  jira:projectPage:
+    - key: trame-project-page
+      title: Trame
+      resource: main
+      resolver:
+        function: resolver
+      render: native
+      icon: resource:icon;icon.svg
+  # Bulletin de la version en un coup d'œil (§18).
+  jira:dashboardGadget:
+    - key: bulletin-gadget
+      title: Weave bulletin
+      resource: main
+      resolver:
+        function: resolver
+  # Quatre fonctions JQL (§18) : elles lisent les registres, jamais en ligne.
+  jira:jqlFunction:
+    - key: holes-function
+      name: holes
+      description: Issues with at least one acceptance criterion that has no verification act.
+      function: jqlHoles
+    - key: perforated-function
+      name: perforated
+      description: Issues with a criterion changed after its last verification.
+      function: jqlPerforated
+    - key: dangling-function
+      name: dangling
+      description: Issues whose verification acts no longer cover anything.
+      function: jqlDangling
+    - key: uncovered-function
+      name: uncovered
+      description: Issues with at least one criterion that is not proven.
+      function: jqlUncovered
+  # Porte optionnelle (TR-30) : elle alerte, elle n'interdit jamais (§5, §14).
+  jira:workflowValidator:
+    - key: weave-gate
+      name: Trame
+      description: Reports the holes and perforations of a ticket at closing time, without blocking it.
+      function: validateWeave
+      projectTypes:
+        - company-managed
+        - team-managed
+  # Certificats de trame et bulletin dans Confluence (§12.4, §12.5).
+  confluence:globalPage:
+    - key: certificates-page
+      title: Weave certificates
+      resource: main
+      resolver:
+        function: resolver
+      render: native
+      icon: resource:icon;icon.svg
+  confluence:macro:
+    - key: bulletin-macro
+      title: Weave bulletin
+      resource: main
+      resolver:
+        function: resolver
+  # Pont signé depuis les pipelines : la source de la force « machine » (§7).
+  webtrigger:
+    - key: ci-results
+      function: ingestResults
+      urlFormat: v2
+      response:
+        type: dynamic
+  # Recalculs longs par tranches avec curseur (§18 : 900 s).
+  consumer:
+    - key: trame-recompute-consumer
+      queue: trame-recompute
+      function: onMessage
+  # Un ticket modifié : empreinte, nouvelle version, perforation immédiate (§8.2).
+  trigger:
+    - key: issue-updated
+      function: onEvent
+      events:
+        - avi:jira:updated:issue
+  # Un seul déclencheur planifié : perforations, fils détendus, bulletin (§18).
+  scheduledTrigger:
+    - key: nightly-recompute
+      function: onScheduled
+      interval: day
+  sql:
+    - key: main
+      engine: mysql
+  llm:
+    - key: main-llm
+      model:
+        - claude
+  # Les points d'entrée de src/index.ts (fichier gelé).
+  function:
+    - key: resolver
+      handler: index.handler
+    - key: dispatch
+      handler: index.dispatch
+    - key: validateWeave
+      handler: index.validateWeave
+    - key: ingestResults
+      handler: index.ingestResults
+    - key: onEvent
+      handler: index.onEvent
+    - key: onScheduled
+      handler: index.onScheduled
+      timeoutSeconds: 600
+    - key: onMessage
+      handler: index.onMessage
+      timeoutSeconds: 900
+    - key: jqlHoles
+      handler: index.holes
+    - key: jqlPerforated
+      handler: index.perforated
+    - key: jqlDangling
+      handler: index.dangling
+    - key: jqlUncovered
+      handler: index.uncovered
+  # Les quatorze outils du §16. Aucun ne renvoie de contenu hors du périmètre
+  # demandé, aucun n'accepte un nom de personne en filtre, aucun n'atteste.
+  action:
+    - key: get-coverage
+      name: Get coverage
+      function: dispatch
+      actionVerb: GET
+      description: Coverage of a scope by strength, link kind and freshness, each with its count.
+      inputs:
+        scope:
+          title: Scope
+          type: string
+          required: true
+          description: Ticket key, sprint name, project key or version name.
+        mode:
+          title: Mode
+          type: string
+          required: false
+          description: Optional filter, for example machine-only or declared-only.
+    - key: list-holes
+      name: List holes
+      function: dispatch
+      actionVerb: GET
+      description: Criteria with no verification act, ranked by the métré, with the terms of the score.
+      inputs:
+        scope:
+          title: Scope
+          type: string
+          required: true
+          description: Ticket key, sprint name, project key or version name.
+        limit:
+          title: Limit
+          type: integer
+          required: true
+          description: Maximum number of holes to return, most risky first.
+    - key: list-perforations
+      name: List perforations
+      function: dispatch
+      actionVerb: GET
+      description: Criteria changed after their last verification, with both dates, the gap and the class.
+      inputs:
+        scope:
+          title: Scope
+          type: string
+          required: true
+          description: Ticket key, sprint name, project key or version name.
+    - key: list-dangling
+      name: List dangling threads
+      function: dispatch
+      actionVerb: GET
+      description: Verification acts that no longer cover anything, with the reason and the impact.
+      inputs:
+        scope:
+          title: Scope
+          type: string
+          required: true
+          description: Ticket key, sprint name, project key or version name.
+    - key: get-criterion
+      name: Get criterion
+      function: dispatch
+      actionVerb: GET
+      description: One criterion with its fingerprint, its verification acts, their strength and freshness.
+      inputs:
+        ticketKey:
+          title: Ticket key
+          type: string
+          required: true
+          description: Key of the Jira issue, for example TRAME-12.
+        criterionId:
+          title: Criterion id
+          type: string
+          required: true
+          description: Stable identifier of the criterion inside the ticket, for example AC-3.
+    - key: propose-test
+      name: Propose a test
+      function: dispatch
+      actionVerb: CREATE
+      description: Drafts a test case for a hole. A draft only, never applied without a human.
+      inputs:
+        ticketKey:
+          title: Ticket key
+          type: string
+          required: true
+          description: Key of the Jira issue that holds the criterion.
+        criterionId:
+          title: Criterion id
+          type: string
+          required: true
+          description: Identifier of the criterion to cover, for example AC-3.
+    - key: propose-reformulation
+      name: Propose a reformulation
+      function: dispatch
+      actionVerb: CREATE
+      description: Proposes a verifiable rewrite of an unfalsifiable criterion, with its measure.
+      inputs:
+        ticketKey:
+          title: Ticket key
+          type: string
+          required: true
+          description: Key of the Jira issue that holds the criterion.
+        criterionId:
+          title: Criterion id
+          type: string
+          required: true
+          description: Identifier of the unfalsifiable criterion.
+    - key: confirm-link
+      name: Confirm a link
+      function: dispatch
+      actionVerb: CREATE
+      description: Re-weaves a derived link into a declared one. A traced human act.
+      inputs:
+        criterionId:
+          title: Criterion id
+          type: string
+          required: true
+          description: Identifier of the criterion, for example TRAME-12/AC-3.
+        verificationRef:
+          title: Verification reference
+          type: string
+          required: true
+          description: Reference of the verification act in its source system.
+        kind:
+          title: Link kind
+          type: string
+          required: true
+          description: One of mention, naming-convention, similarity, declaration.
+    - key: reject-link
+      name: Reject a link
+      function: dispatch
+      actionVerb: UPDATE
+      description: Refuses a proposed link; the next suggestion of the same kind is weaker.
+      inputs:
+        criterionId:
+          title: Criterion id
+          type: string
+          required: true
+          description: Identifier of the criterion.
+        verificationRef:
+          title: Verification reference
+          type: string
+          required: true
+          description: Reference of the verification act.
+        reason:
+          title: Reason
+          type: string
+          required: true
+          description: Why the link is wrong; it feeds the learning of the weaving.
+    - key: get-bulletin
+      name: Get bulletin
+      function: dispatch
+      actionVerb: GET
+      description: Dated weave bulletin of a scope, comparable with the previous witness.
+      inputs:
+        scope:
+          title: Scope
+          type: string
+          required: true
+          description: Sprint name, project key or version name.
+    - key: get-certificate
+      name: Get certificate
+      function: dispatch
+      actionVerb: GET
+      description: Content of the weave certificate, including what is explicitly not covered.
+      inputs:
+        scope:
+          title: Scope
+          type: string
+          required: true
+          description: Sprint name, project key or version name.
+    - key: list-unverifiable
+      name: List unfalsifiable criteria
+      function: dispatch
+      actionVerb: GET
+      description: Criteria that nothing can verify, with the proposed reformulations.
+      inputs:
+        scope:
+          title: Scope
+          type: string
+          required: true
+          description: Ticket key, sprint name, project key or version name.
+    - key: get-zones-risk
+      name: Get risk zones
+      function: dispatch
+      actionVerb: GET
+      description: Repository zones with past defects and open incidents, the inputs of the métré.
+      inputs:
+        scope:
+          title: Scope
+          type: string
+          required: true
+          description: Project key or version name.
+    - key: get-coverage-timeline
+      name: Get coverage timeline
+      function: dispatch
+      actionVerb: GET
+      description: Coverage history of a scope, witness after witness.
+      inputs:
+        scope:
+          title: Scope
+          type: string
+          required: true
+          description: Sprint name, project key or version name.
+    # Quatre actions internes : écrans, déclencheurs et recalculs. Non exposées
+    # à Rovo (absentes de rovo:mcp) parce qu'elles écrivent dans les registres.
+    - key: recompute
+      name: Recompute a scope
+      function: dispatch
+      actionVerb: CREATE
+      description: Enqueues a sliced recomputation of a scope through the consumer.
+    - key: set-metric-rule
+      name: Set the métré
+      function: dispatch
+      actionVerb: UPDATE
+      description: Stores the weights a team chose for the priority of holes.
+    - key: save-witness
+      name: Save a witness
+      function: dispatch
+      actionVerb: CREATE
+      description: Keeps the dated state of a weave, to compare two sprints or versions.
+    - key: publish-certificate
+      name: Publish a certificate
+      function: dispatch
+      actionVerb: CREATE
+      description: Generates the Confluence page of a weave certificate.
+  # L'agent Rovo « Le fil » (§16) : il lit, il chiffre, il propose, il n'atteste
+  # jamais et ne note personne.
+  rovo:agent:
+    - key: le-fil
+      name: Le fil
+      description: >-
+        Answers the weave questions of a scope: what is covered and at which
+        strength, what was perforated, which threads went dangling, which holes
+        are the most risky, and which criteria cannot be verified at all.
+      prompt: resource:agent-prompt;prompt.md
+      conversationStarters:
+        - Which criteria of this release are covered only by a declaration?
+        - What was perforated this week?
+        - Which zones hold our riskiest holes?
+        - Write a test draft for AC-3 of TRAME-412.
+      actions:
+        - get-coverage
+        - list-holes
+        - list-perforations
+        - list-dangling
+        - get-criterion
+        - get-bulletin
+        - get-certificate
+        - list-unverifiable
+        - get-zones-risk
+        - get-coverage-timeline
+        - propose-test
+        - propose-reformulation
+        - confirm-link
+        - reject-link
+      followUpPrompt: Ask what is still not proven in this scope.
+  # Un seul module rovo:mcp par app ; les quatorze outils du §16, rien d'autre.
+  rovo:mcp:
+    - key: trame-mcp
+      name: Trame
+      tools:
+        - get-coverage
+        - list-holes
+        - list-perforations
+        - list-dangling
+        - get-criterion
+        - propose-test
+        - propose-reformulation
+        - confirm-link
+        - reject-link
+        - get-bulletin
+        - get-certificate
+        - list-unverifiable
+        - get-zones-risk
+        - get-coverage-timeline
+resources:
+  # Entrée UI Kit : les onze écrans (§17), en souche jusqu'au lot L9.
+  - key: main
+    path: src/ui/frontend/index.tsx
+  # Prompt système de l'agent Rovo, icône des modules.
+  - key: agent-prompt
+    path: static/agent
+  - key: icon
+    path: static/icon
+
+permissions:
+  scopes:
+    # Lire les tickets, champs et descriptions : les six gîtes d'un critère (§6).
+    - read:jira-work
+    # Lire les détails des tickets : texte des critères et empreintes.
+    - read:issue-details:jira
+    # Écrire ce que l'app possède : commentaires de signalement et propriétés
+    # des champs Trame / Trous / Perforations.
+    - write:issue-details:jira
+    # Lire l'utilisateur courant : la piste d'audit d'un acte, jamais un classement.
+    - read:me
+    # Lire les utilisateurs : nommer l'auteur d'une déclaration dans l'audit.
+    - read:jira-user
+    # Lire Confluence : checklists comme critères, pages comme artefacts (§6).
+    - read:confluence-content.all
+    # Écrire le certificat de trame dans Confluence (§12.5).
+    - write:confluence-content
+    # Le graphe, un droit par type d'objet (§10) : un droit manquant vide le
+    # résultat sans erreur, et l'écran de couverture le déclare (§18).
+    - graph:work-item
+    - graph:test-plan
+    - graph:test-run
+    - graph:test-execution
+    - graph:test-status
+    - graph:commit
+    - graph:pull-request
+    - graph:deployment
+    - graph:document
+    - graph:project
+    - graph:software-service
+    - graph:atlassian-user
