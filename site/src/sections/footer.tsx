@@ -7,7 +7,7 @@ import type { ReactElement } from 'react';
 import { t } from '../i18n/index.js';
 import type { Lang } from '../i18n/index.js';
 
-const REPO = 'https://github.com/BaptisteFaisy/trame';
+const REPO = 'https://github.com/Tradoooo/trame';
 
 export interface FooterProps {
   lang: Lang;

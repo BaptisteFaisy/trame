@@ -42,7 +42,7 @@ const DOCS = [
   { label: 'src/domain/', href: 'tree/main/src/domain' },
 ] as const;
 
-const REPO = 'https://github.com/BaptisteFaisy/trame';
+const REPO = 'https://github.com/Tradoooo/trame';
 
 export interface ArchitectureProps {
   lang: Lang;
