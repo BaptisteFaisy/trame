@@ -67,7 +67,10 @@ describe('entry points', () => {
     const actor = { accountId: 'u1', moduleId: 'mcp', fromMcp: true, cloudId: 'c1' };
     for (const key of ACTION_KEYS) {
       const out = (await runAction(key, {}, deps, actor)) as { notImplemented?: string };
-      expect(out.notImplemented, key).toBe(key);
+      // Une action sans périmètre répond une structure (un refus explicite),
+      // jamais une souche `notImplemented` : le corps est réel (lot L8).
+      expect(out).toBeTruthy();
+      expect(out.notImplemented, key).toBeUndefined();
     }
   });
 
