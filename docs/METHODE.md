@@ -64,3 +64,5 @@ written.
 
 Version A : le texte de la branche A — il faut garder les deux apports.
 Version B : le texte de la branche B — lui aussi doit survivre.
+
+<!-- sonde mergify $(date +) -->
