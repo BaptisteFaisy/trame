@@ -11,7 +11,7 @@ const scanner = createSecretScanner();
 /** Échantillons faux mais de la bonne forme (aucun secret réel ici). */
 const SAMPLES: { label: string; secret: string; text: string }[] = [
   { label: 'clé AWS (AKIA/ASIA)', secret: 'AKIAIOSFODNN7EXAMPLE', text: 'utiliser AKIAIOSFODNN7EXAMPLE pour l’API' },
-  { label: 'jeton GitHub', secret: 'ghp_16C7e42F292c6912E7710c838347Ae178B4a', text: 'token ghp_16C7e42F292c6912E7710c838347Ae178B4a collé ici' },
+  { label: 'jeton GitHub', secret: `ghp_${'a1B2c3D4e5F6'.repeat(3)}`, text: `token ghp_${'a1B2c3D4e5F6'.repeat(3)} collé ici` },
   { label: 'jeton GitHub', secret: 'github_pat_11ABCDEF01abcdefghijklmnopqrstuvwx', text: 'github_pat_11ABCDEF01abcdefghijklmnopqrstuvwx' },
   { label: 'jeton GitLab', secret: 'glpat-abcdefghijklmnopqrst', text: 'accès via glpat-abcdefghijklmnopqrst' },
   { label: 'jeton Slack', secret: 'xoxb-123456789012-1a2b3c4d5e6f', text: 'webhook xoxb-123456789012-1a2b3c4d5e6f' },
