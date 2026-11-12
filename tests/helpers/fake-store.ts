@@ -289,6 +289,15 @@ export class FakeStore implements TrameStore {
     upsert(this.events, event);
   }
 
+  async listScopes(limit: number): Promise<string[]> {
+    const scopes = new Set<string>();
+    for (const event of this.events) scopes.add(event.scope);
+    for (const criterion of this.criteria) {
+      for (const ref of criterion.scopeRefs) scopes.add(`${ref.scopeType}:${ref.scope}`);
+    }
+    return [...scopes].slice(0, limit);
+  }
+
   async listEvents(scope: string, limit: number): Promise<CoverageEvent[]> {
     return newestFirst(
       this.events.filter((row) => row.scope === scope),
