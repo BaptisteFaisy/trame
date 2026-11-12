@@ -1,13 +1,39 @@
-import type { Deps } from '../ports.js';
-
-/** Bulletin de trame daté, posé à côté de son témoin (§12.4).
+/**
+ * Écran : le bulletin de trame (§12.4). Chargé par le resolver, il lit le
+ * périmètre, le témoin précédent et les registres, puis rend le vue-modèle.
  *
- * Deux chiffres ne sont comparés que si périmètres et époques coïncident — lot L9.
- * Souche : signature gelée (docs/CONTRACTS.md §3), corps à écrire.
+ * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-export async function render(
-  _deps: Deps,
-  _payload: Record<string, unknown>,
-): Promise<unknown> {
-  return { notImplemented: 'bulletin' };
+import type { Deps } from '../ports.js';
+import { scopeFrom, languageFrom, loadScope } from './screen.js';
+import { computeCoverage } from '../domain/coverage.js';
+import { detectDangling } from '../domain/dangling.js';
+import { detectPerforations } from '../domain/perforations.js';
+import { previousWitness } from '../domain/witness.js';
+import { buildBulletinView } from '../viewmodel/bulletin.js';
+
+export async function render(deps: Deps, payload: Record<string, unknown>): Promise<unknown> {
+  const scope = scopeFrom(payload);
+  const language = languageFrom(payload);
+  if (!scope) return { scope: payload['scope'] ?? '', scopeType: payload['scopeType'] ?? 'project', language, message: 'no-criterion-written' };
+  const now = deps.clock.now();
+  const data = await loadScope(deps, scope);
+  if (data.criteria.length === 0) return { scope: scope.scope, scopeType: scope.scopeType, language, message: 'no-criterion-written' };
+  const perforations = detectPerforations({ ...data, now });
+  const dangling = detectDangling({ ...data, now });
+  const coverage = computeCoverage({ criteria: data.criteria, verifications: data.verifications, links: data.links, perforations, dangling, scope: scope.scope, scopeType: scope.scopeType, computedAt: now });
+  const previous = await previousWitness(deps, scope.scope, scope.scopeType);
+  const holes = await deps.store.listHoles(scope, 10);
+  return buildBulletinView({
+    language,
+    scope: scope.scope,
+    scopeType: scope.scopeType,
+    computedAt: now,
+    coverage,
+    previous,
+    perforations: perforations.length,
+    dangling: dangling.length,
+    addedDuringSprint: data.criteria.filter((criterion) => criterion.createdAt > (previous?.computedAt ?? '1970-01-01T00:00:00.000Z')).length,
+    holes,
+  });
 }
