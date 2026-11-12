@@ -33,8 +33,19 @@ export interface CollectInput {
   table?: CriterionTable;
   /** Page Confluence, pour l'origine `confluence-page` (lien indirect). */
   pageId?: string;
+  /**
+   * Identifiant de la source hors ticket : sous-tâche de test, page, pièce
+   * jointe. Il entre dans le `stableKey` pour distinguer deux sources qui
+   * porteraient le même texte.
+   */
+  sourceId?: string;
   /** Référence de pièce jointe : l'app pointe, elle ne décode pas (§6). */
   attachmentRef?: string;
+  /**
+   * Résultat consigné d'une sous-tâche de test (§6, origine 5) : il
+   * **documente** le critère, il n'en crée jamais un.
+   */
+  resultText?: string;
   /** Dernière modification du matériau (ISO) : fraîcheur et perforation. */
   updatedAt: string;
   /** Piste d'audit uniquement — jamais un classement de personne (§5). */
@@ -64,7 +75,12 @@ export interface ExtractedCriterion {
   /** Ligne d'apparition dans le matériau : explique la numérotation stable. */
   lineNumber?: number;
   /**
-   * Identifiant stable de dédoublonnage : `issueId|origin|criterionKey`.
+   * Note jointe au critère (résultat d'un test, état d'une case) : elle
+   * **documente**, elle ne crée jamais de critère (§6, origine 5).
+   */
+  documentation?: string;
+  /**
+   * Identifiant stable de dédoublonnage : `issueId|origine[|portée]|clé`.
    * Deux critères au même texte ont des `stableKey` distincts — les doublons
    * sont signalés, jamais double-comptés dans la couverture (§23).
    */
@@ -74,4 +90,24 @@ export interface ExtractedCriterion {
    * empreinte) : le doublon est signalé sans être double-compté (§23).
    */
   duplicateRefs?: string[];
+}
+
+/**
+ * Un matériau écarté parce qu'il porte un secret (§5, recette 20).
+ *
+ * Le critère lui-même n'est jamais retourné : l'app ne garde aucun secret.
+ * Le signalement dit **quel** matériau et **quelle famille** de secret —
+ * jamais la valeur trouvée (ce serait la publier).
+ */
+export interface SecretSignal {
+  /** Ticket porteur du matériau. */
+  issueId: string;
+  /** Clé lisible du ticket porteur. */
+  ticketKey: string;
+  /** Gîte d'origine du matériau. */
+  origin: CriterionOrigin;
+  /** Famille du secret (« clé AWS (AKIA/ASIA) ») : jamais la valeur. */
+  secretFlag: string;
+  /** Empreinte du matériau : on trace sans recopier le secret (§8.2). */
+  textHash: string;
 }
