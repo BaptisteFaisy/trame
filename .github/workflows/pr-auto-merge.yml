@@ -205,7 +205,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/15 * * * *'
   workflow_run:
     # `ci-budget` est un job de `CI` depuis le 29/10 : `CI` couvre les trois
     # checks requis. `couche0` n'y est PLUS (v26, 31/10) : il finit ~9 s après
@@ -365,7 +365,11 @@ jobs:
           # prochain déclenchement).
           lire_fiche() { # $1=numéro PR → json fiche stabilisée
             local n="$1" i fiche etat
-            for i in $(seq 1 12); do
+            # Un seul runner : la lecture de la fiche ne doit pas monopoliser
+            # le runner (12 lectures x 10 s = 2 min par PR, 8 PR = 16 min).
+            # Trois lectures suffisent à sortir du flapping ; au-delà, le
+            # réessai du prochain passage prend le relais.
+            for i in $(seq 1 3); do
               fiche="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$n" \
                 2>/dev/null)" || return 1
               etat="$(printf '%s' "$fiche" | jq -r .mergeable_state \
@@ -381,8 +385,11 @@ jobs:
           }
           inventaire() {
             local n
+            # Cinq PR au plus, les plus récemment touchées : avec un seul
+            # runner, un balayage qui passe toutes les PR ouvertes affame la
+            # CI des PR (le balayage et la CI se disputent le même runner).
             gh api "repos/$GITHUB_REPOSITORY/pulls?state=open&base=main&per_page=100" \
-              --jq '.[].number' 2>/dev/null \
+              --jq 'sort_by(.updated_at) | reverse | .[0:5] | .[].number' 2>/dev/null \
               | while read -r n; do
                   lire_fiche "$n" | jq '{
                     number: .number, headRefOid: .head.sha, headRefName: .head.ref,
