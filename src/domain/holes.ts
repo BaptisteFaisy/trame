@@ -182,13 +182,30 @@ function isLivingLink(
 /* ------------------------------------------------------------------ zones */
 
 /**
- * La zone du dépôt où le critère vit : d'abord l'acte qui le vérifiait — même
- * mort, il porte la zone du dépôt — sinon la zone des actes du même ticket,
- * mais seulement si ces actes sont d'accord. Des actes qui se contredisent ne
- * disent rien : la zone reste inconnue, le trou affiche « zone sans
- * antécédent » plutôt qu'une zone devinée (§22).
+ * Un critère qui porte aussi sa zone du dépôt (§11).
+ *
+ * Le contrat gelé `Criterion` n'a pas encore ce champ : on le lit
+ * structurellement, sans modifier `src/types.ts` (fichier gelé, hors du
+ * périmètre du lot). Le jour où le champ existe, le trou l'utilise sans
+ * rien changer ici.
+ */
+type CriterionWithZone = Criterion & { zone?: string };
+
+/** La zone du dépôt portée par le critère lui-même, si elle existe. */
+function criterionZone(criterion: Criterion): string | undefined {
+  return (criterion as CriterionWithZone).zone;
+}
+
+/**
+ * La zone du dépôt où le critère vit : d'abord le critère lui-même, puis
+ * l'acte qui le vérifiait — même mort, il porte la zone — sinon la zone des
+ * actes du même ticket, mais seulement si ces actes sont d'accord. Des actes
+ * qui se contredisent ne disent rien : la zone reste inconnue, le trou
+ * affiche « zone sans antécédent » plutôt qu'une zone devinée (§22).
  */
 function zoneOf(criterion: Criterion, context: HoleContext): string | undefined {
+  const own = criterionZone(criterion);
+  if (own) return own;
   const linked = zonesOfCriterion(criterion, context).find((zone) => zone !== undefined);
   if (linked) return linked;
   return zoneOfTicket(criterion, context);
