@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Trame — the coverage of your acceptance criteria">
+  <!-- Vignette de partage, dessinée à la main : la toile, un trou, le slogan. -->
+  <rect width="1200" height="630" fill="#0b1b33" />
+  <g stroke="#1f3a5f" stroke-width="3">
+    <path d="M120 90v450M200 90v450M280 90v450M360 90v450M440 90v450M520 90v450M600 90v450M680 90v450M760 90v450M840 90v450M920 90v450M1000 90v450" />
+  </g>
+  <g stroke="#579dff" stroke-width="6" stroke-linecap="round">
+    <path d="M90 170h940M90 260h940M90 440h940" />
+  </g>
+  <g stroke="#579dff" stroke-width="6" stroke-linecap="round">
+    <path d="M90 350h400M560 350h470" />
+  </g>
+  <rect x="496" y="322" width="58" height="56" fill="#0b1b33" stroke="#f5cd47" stroke-width="4" stroke-dasharray="10 8" />
+  <text x="80" y="80" fill="#e6edf3" font-family="Helvetica, Arial, sans-serif" font-size="34" letter-spacing="6">TRAME</text>
+  <text x="80" y="600" fill="#e6edf3" font-family="Helvetica, Arial, sans-serif" font-size="52" font-weight="bold">The coverage of your acceptance criteria</text>
+  <text x="80" y="560" fill="#9fadbc" font-family="Helvetica, Arial, sans-serif" font-size="28">the missing thread — a Forge app for Jira, Codegeist 2026</text>
+</svg>
