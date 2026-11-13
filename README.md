@@ -66,7 +66,7 @@ dit « couvert, par une déclaration, sur un critère périmé depuis 40 jours �
 Trame n'est plus un socle : l'app tourne, elle est déployée, et le site public
 exécute le vrai moteur.
 
-- **428 tests verts, 49 fichiers** (`npm test`, quelques secondes à chaud) :
+- **455 tests verts, 53 fichiers** (`npm test`, quelques secondes à chaud) :
   domaine, écrans, outils, points d'entrée, tout passe sur des fakes en mémoire,
   sans réseau.
 - **11 écrans réels** (§17) — carte de trame, fiche critère, explorateur de
@@ -79,20 +79,31 @@ exécute le vrai moteur.
   quotidien, `consumer` par tranches (900 s), `webtrigger` signé pour les
   pipelines, les **4 fonctions JQL** (`holes`, `perforated`, `dangling`,
   `uncovered`) et le validateur de workflow non bloquant.
-- **App Forge déployée** en `development` (v2.1.0) :
+- **L'interface UI Kit 2 est réelle** : 2 700 lignes, une façade
+  (`src/ui/kit.tsx`), un pont vers le resolver (`src/ui/bridge.ts`), les onze
+  écrans (`src/ui/screens/*`) et **cinq entrées**, une par module
+  (`src/ui/frontend/{panel,page,project,gadget,certificates}.tsx`). Le montage
+  passe par l'export **par défaut** de `@forge/react` (`ForgeReconciler.render`).
+  Un garde (`tests/ui/no-raw-html.test.ts`) refuse toute balise HTML brut :
+  le moteur de rendu d'Atlassian rejette les éléments inconnus, et une telle
+  balise passerait les tests pour casser l'écran en production.
+- **App Forge déployée en PRODUCTION** (v2.1.0) :
   `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51`, installée sur
-  `one-atlas-cndz.atlassian.net`, en Jira et en Confluence.
+  `one-atlas-cndz.atlassian.net`, en Jira et en Confluence. La chaîne complète
+  y tourne : le trigger ingère un ticket modifié, le consumer recalcule le
+  périmètre, les quatre fonctions JQL répondent.
 - **Site public en ligne** : <https://tradoooo.github.io/trame/> — la démo
   importe `src/domain/*` et `src/sample/demo-project.ts`, les chiffres affichés
   sortent du moteur, ils ne sont pas écrits à la main.
 
-Deux souches restent, assumées et nommées :
+Une souche reste, assumée et nommée ; un refus explicite s'y ajoute :
 
-1. **L'interface UI Kit 2** — `src/ui/frontend/index.tsx` est le registre des
-   écrans, pas les écrans eux-mêmes : `@forge/react` v10 n'expose pas `render`,
-   l'écran affiché reste celui que le manifeste déclare.
-2. **La génération LLM** — `src/ingest/llm.ts` (reformulation, lecture de texte
+1. **La génération LLM** — `src/ingest/llm.ts` (reformulation, lecture de texte
    libre) est une souche ; le reste de l'ingestion est réel.
+2. **L'écriture du certificat dans Confluence** n'est pas un silence : le
+   connecteur refuse d'écrire (`src/ingest/confluence.ts`, `publishCertificate`
+   → `null`) et l'action répond un refus explicite, avec le repli du cahier
+   (certificat produit dans l'app, puis exporté à la main).
 
 Le découpage en lots L1–L12 est livré ; l'ownership map par fichier reste dans
 [docs/CONTRACTS.md](docs/CONTRACTS.md) §4.
@@ -101,8 +112,10 @@ Le découpage en lots L1–L12 est livré ; l'ownership map par fichier reste da
 
 - **Site public**, sans installation ni compte : <https://tradoooo.github.io/trame/>
   (démo jouable : perforations, trous, bulletin, certificat).
-- **App Forge installée** (environnement `development`, v2.1.0) sur
-  `one-atlas-cndz.atlassian.net` :
+- **App Forge installée en production** (v2.1.0) sur
+  `one-atlas-cndz.atlassian.net` — la page globale, en direct :
+  <https://one-atlas-cndz.atlassian.net/jira/apps/5faa12e1-3a13-4d3c-977e-da1ad6931a51/c9c1adb8-adee-411d-b534-3583eebbc5b9>
+  (capture : `docs/captures/06-app-jira-production.png`) :
   - Jira → menu **Apps** → **Trame** : la page globale, onze écrans derrière une
     seule route ;
   - ouverture d'un ticket → panneau **Criteria** (fiche critère) ;
@@ -112,8 +125,10 @@ Le découpage en lots L1–L12 est livré ; l'ownership map par fichier reste da
   - en JQL : `issue in holes()`, `issue in perforated()`, `issue in dangling()`,
     `issue in uncovered()`.
 
-Pour redéployer : `forge deploy -e development`, puis `forge install --upgrade`
-sur le site (voir la note Node ci-dessous).
+Pour redéployer : `forge deploy -e production`, puis `forge install --upgrade`
+sur le site (voir la note Node ci-dessous). L'environnement de développement a
+été désinstallé : le quota Forge SQL est partagé par installation d'app, et une
+app site-wide qui réagit à chaque ticket le sature.
 
 ## Développer
 
@@ -122,12 +137,12 @@ limites, et la CLI Forge pour linter et déployer.
 
 ```bash
 npm ci                # dépendances (package-lock)
-npm test              # vitest run — 428 tests, fakes en mémoire, aucun réseau
+npm test              # vitest run — 455 tests, fakes en mémoire, aucun réseau
 npm run typecheck     # tsc --noEmit
 npm run site:build    # construit le site public (Vite) dans dist/
 npm run check:limits  # garde locale : fichiers < 500 lignes, fonctions < 50
 npm run site:dev      # sert le site public en local, avec le vrai moteur
-forge deploy -e development   # déploiement vers le site de développement
+forge deploy -e production    # déploiement vers la production
 ```
 
 La CI (checks requis `ci`, `ci-budget`, `couche0`) et la file de merge Mergify
@@ -160,18 +175,18 @@ Détail : [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 |---|---|
 | `src/domain/` | logique pure : tissage, couverture, perforations, fils détendus, falsifiabilité, métré, certificat, propositions |
 | `src/collect/` | extraction des critères — six gîtes (description, champ, tableau, pièce jointe, Confluence, ticket de test), normalisation, empreinte |
-| `src/ingest/` | actes de vérification : Jira, Confluence, Bitbucket, commentaires, pipelines, requêtes graphe, `llm.ts` (souche) |
+| `src/ingest/` | actes de vérification : Jira, Confluence, Bitbucket, commentaires, pipelines, requêtes graphe, `llm.ts` (seule souche) |
 | `src/handlers/` | points d'entrée Forge : resolver (11 écrans), dispatch (outils), trigger, scheduled, consumer, webtrigger, 4 fonctions JQL, validateur |
 | `src/actions/` | un fichier par outil : 14 outils MCP + 4 actions internes |
 | `src/viewmodel/` | mise en forme pour les écrans et les rapports, une clé = un fichier |
 | `src/db/` | Forge SQL : client, dépôts, correspondances et DDL (`schema.ts`) |
-| `src/ui/frontend/` | registre des écrans UI Kit 2 (`index.tsx`) — souche assumée, voir « État » |
+| `src/ui/frontend/` | les cinq entrées UI Kit 2 : `panel`, `page`, `project`, `gadget`, `certificates` |
 | `src/i18n/` | dictionnaires EN / FR à parité |
 | `src/sample/` | le projet de démonstration que joue le site public |
 | `src/index.ts`, `ports.ts`, `types.ts`, `deps.ts` | câblage Forge gelé, frontière de ports, contrats |
 | `site/` | le site public (Vite + React) ; sa démo importe `src/domain/*`, `npm run site:build` |
 | `static/` | icône, prompt de l'agent Rovo, skill `before-closing-a-ticket` |
-| `tests/` | 49 fichiers, miroir de `src/`, fakes en mémoire et horloge fixe |
+| `tests/` | 53 fichiers, miroir de `src/`, fakes en mémoire et horloge fixe |
 | `tools/` | gardes locales : limites de fichiers et de fonctions, manifeste, workflows |
 | `docs/` | spécification (§n cité partout), contrats, architecture, recette, dossier de soumission |
 | `manifest.yml` | les modules Forge (panneaux, pages, champs, JQL, validateur, déclencheurs, outils) et leurs permissions |

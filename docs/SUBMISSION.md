@@ -6,9 +6,10 @@
 > Tout ce qui est écrit ici est vérifiable dans le dépôt ; ce qui n'est pas
 > encore écrit dans le dépôt est marqué comme tel.
 >
-> Mesures du 13 novembre 2026 sur cette base : `npx vitest run` → **428 tests
-> verts, 49 fichiers** ; `forge lint` → **0 erreur, 5 avertissements** (CLI 14.2),
-> application `v2.1.0` en environnement `development`.
+> Mesures du 13 novembre 2026 au soir : `npx vitest run` → **455 tests verts,
+> 53 fichiers** ; `forge lint` → **0 erreur, 4 avertissements** (les quatre
+> actions internes, attendues) ; application `v2.1.0` **déployée en production
+> et installée** en Jira et en Confluence sur `one-atlas-cndz.atlassian.net`.
 
 ## 1. La fiche
 
@@ -110,8 +111,8 @@
   contrats, architecture, recette, instructions aux jugés, scénario vidéo).
 - **état honnête** : l'application Forge existe et tourne —
   identifiant `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51`,
-  version `2.1.0` en environnement `development`, `forge lint` sans erreur
-  (5 avertissements, CLI 14.2), installée sur le site réel
+  version `2.1.0` **en production**, `forge lint` sans erreur
+  (4 avertissements : les quatre actions internes), installée sur le site réel
   `one-atlas-cndz.atlassian.net` en **Jira** et en **Confluence** (page
   « weave-certificates »).
   Le bundleur Forge (webpack/ts-loader) ne résout pas les imports relatifs
@@ -154,15 +155,20 @@
    le connecteur Confluence est en **repli explicite** (lecture vide, écriture
    du certificat non câblée, journalisée) et la génération LLM est une souche
    marquée `notImplemented` — cache par empreinte et budget réels.
-9. `src/ui/frontend/index.tsx` et `src/i18n/*` — l'entrée UI Kit 2 existe et
-   compile, mais elle **rend le registre des onze clés**, pas les écrans :
-   souche assumée, `@forge/react` v10 n'exposant pas `render`. Les dictionnaires
+9. `src/ui/*` et `src/i18n/*` — l'**interface UI Kit 2 est réelle** : la façade
+   (`src/ui/kit.tsx`), le pont vers le resolver (`src/ui/bridge.ts`), le
+   montage (`src/ui/mount.ts`, via l'export par défaut `ForgeReconciler.render`
+   de `@forge/react`), les onze écrans (`src/ui/screens/*`) et cinq entrées,
+   une par module (`src/ui/frontend/{panel,page,project,gadget,certificates}.tsx`).
+   Un garde (`tests/ui/no-raw-html.test.ts`) refuse toute balise HTML brut : le
+   moteur de rendu d'Atlassian rejette les éléments inconnus et une telle balise
+   casserait l'écran en production sans laisser de trace. Les dictionnaires
    EN/FR sont à parité vérifiée par le compilateur et par
    `tests/i18n/dictionary.test.ts`.
 10. `src/sample/*` et `tests/helpers/*` — le projet de démonstration du §26, le
     scénario `TRAME-1`, store en mémoire, passerelles fictives, horloge
-    injectable : **tout est testable sans Forge et sans réseau** — 428 tests,
-    49 fichiers.
+    injectable : **tout est testable sans Forge et sans réseau** — 455 tests,
+    53 fichiers.
 
 ## 4. Ce qui est prêt, ce qui reste
 
@@ -184,18 +190,17 @@
 | Pipeline CI : `ci`, `ci-budget`, `couche0`, file Mergify, budget 5 min, runner `r630-trame-01` | `docs/CI.md`, `tools/`, `.github/workflows/` |
 | Agent de conflits « hermes » sur InferHub | `docs/CONFLICTS.md` ; PR #19 mergée, PR #21 `CONFLICTING` réconciliée par l'agent |
 
-Bilan mesuré le 13 novembre 2026 : **49 fichiers de test, 428 tests, tout vert**
-(`npx vitest run`).
+Bilan mesuré le 13 novembre 2026 au soir : **53 fichiers de test, 455 tests,
+tout vert** (`npx vitest run`).
 
 ### Ce qui reste réellement ouvert
 
 | Chantier | Où c'est | État exact |
 |---|---|---|
-| Entrée UI Kit 2 : monter les onze écrans au lieu de lister les clés | `src/ui/frontend/index.tsx` | souche assumée — les écrans existent en view-models, l'entrée ne les rend pas ; `@forge/react` v10 n'expose pas `render` |
 | Écriture du certificat dans Confluence | `src/ingest/confluence.ts` | `publishCertificate` renvoie `null` et journalise le repli §21 : le certificat est produit dans l'app puis exporté |
 | Génération LLM : reformulation d'un critère, brouillon de test | `src/ingest/llm.ts` | `notImplemented` explicite ; cache par empreinte et budget réels |
 | Vidéo de démonstration | `docs/VIDEO-SCRIPT.md` | plan minuté prêt ; **la vidéo n'est pas tournée** |
-| Publication Marketplace | app Forge `v2.1.0` en `development` | installée en dev, pas soumise à la Marketplace ; l'entrée UI Kit 2 ne monte pas encore les écrans |
+| Publication Marketplace | app Forge `v2.1.0` en **production** | déployée en production et installée en Jira et en Confluence ; **pas** soumise à la Marketplace (l'app porte un `webtrigger`, ce qui la rend inéligible au programme « Runs on Atlassian » — le pont signé des pipelines est la source de la force « machine », c'est un arbitrage de gelée) |
 
 ## 5. Les liens
 
@@ -203,7 +208,7 @@ Bilan mesuré le 13 novembre 2026 : **49 fichiers de test, 428 tests, tout vert*
 |---|---|---|
 | Dépôt | https://github.com/Tradoooo/trame | public ; base `origin/main` @ `7c468f7` |
 | Démonstration publique | https://tradoooo.github.io/trame/ | **en ligne** ; la page exécute le vrai moteur (`site/`, mesuré par `tests/site/`, 12 tests) |
-| App Forge déployée | `one-atlas-cndz.atlassian.net` (Jira + Confluence) | déployée en `development`, `v2.1.0`, ARI `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51` |
+| App Forge déployée | `one-atlas-cndz.atlassian.net` (Jira + Confluence) | **en production**, `v2.1.0`, ARI `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51` ; page globale : <https://one-atlas-cndz.atlassian.net/jira/apps/5faa12e1-3a13-4d3c-977e-da1ad6931a51/c9c1adb8-adee-411d-b534-3583eebbc5b9> (capture : `docs/captures/06-app-jira-production.png`) |
 | Recette | [`docs/RECETTE.md`](RECETTE.md), [`docs/RECETTE-POINTS.md`](RECETTE-POINTS.md) | vingt points, commandes exactes ; états mesurés le 13/11/2026 sur `7c468f7` |
 | Instructions aux jugés | [`docs/JUDGES.md`](JUDGES.md) | en dépôt, base `7c468f7` |
 | Scénario de la vidéo | [`docs/VIDEO-SCRIPT.md`](VIDEO-SCRIPT.md) | plan minuté prêt ; **la vidéo n'est pas tournée** |
@@ -220,8 +225,8 @@ Bilan mesuré le 13 novembre 2026 : **49 fichiers de test, 428 tests, tout vert*
 | 3 | recette des vingt points, avec la commande exacte et l'état réel | `docs/RECETTE.md`, `docs/RECETTE-POINTS.md` | **fait** : 20/20 points mesurés le 13/11/2026 sur `7c468f7` |
 | 4 | jeu de données de démonstration | `src/sample/demo-project.ts` (§26, testé) | fait |
 | 5 | scénario de la vidéo minuté et liste des captures | `docs/VIDEO-SCRIPT.md` | fait (plan) ; **la vidéo reste à tourner** |
-| 6 | instructions aux jugés, y compris l'installation en cinq minutes | `docs/JUDGES.md` | **fait** : base `7c468f7`, 428 tests, app déployée |
-| 7 | application déployée sur un site de développement | `one-atlas-cndz.atlassian.net`, `v2.1.0` dev | **fait** (déployée et installée) ; la démo reste partielle : l'entrée UI Kit 2 liste les écrans au lieu de les monter |
+| 6 | instructions aux jugés, y compris l'installation en cinq minutes | `docs/JUDGES.md` | **fait** : 455 tests, app déployée en production |
+| 7 | application déployée sur un site | `one-atlas-cndz.atlassian.net`, `v2.1.0` **production** | **fait** (déployée en production, installée en Jira et en Confluence) ; l'interface UI Kit 2 rend les onze écrans — capture à l'appui |
 | 8 | liens de démonstration et de vidéo publiés dans la fiche de soumission | §5 | démonstration **fait** (site public en ligne) ; vidéo **à faire** |
 | 9 | bonus Teamwork Graph, Agents Rovo, MCP, Marketplace cochés, avec la preuve dans le dépôt | §2 | fait : permissions et rectification TWG, agent `le-fil`, prompt, skill, 14 outils + 4 actions internes avec leurs corps et leurs tests, manifeste de 18 types de modules |
 | 10 | discipline d'honnêteté opposable | §5 et §14 du cahier des charges ; `tests/contract/honesty.test.ts` | fait |
