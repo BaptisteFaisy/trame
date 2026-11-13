@@ -246,14 +246,13 @@ describe('le consumer', () => {
     const deps = makeDeps();
     (deps.jira as FakeJira).withIssues(ISSUE);
     await onJiraEvent({ issueKey: 'TRAME-1' }, deps);
-    const before = (deps.log as FakeLogger).entries?.length ?? 0;
     await onRecomputeMessage(
       messageOf({ body: { scope: 'TRAME-1', scopeType: 'ticket', mode: 'measures' } }),
       deps,
     );
-    const after = (deps.log as FakeLogger).entries ?? [];
-    expect(after.length).toBeGreaterThanOrEqual(before);
-    expect(after.some((line) => line.includes('mode inconnu'))).toBe(false);
+    const log = deps.log as FakeLogger;
+    expect(log.has('mode inconnu')).toBe(false);
+    expect(log.has('consumer : tranche traitée')).toBe(true);
   });
 });
 
