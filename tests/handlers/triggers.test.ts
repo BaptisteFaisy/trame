@@ -57,6 +57,17 @@ const ISSUE: IssueRef = {
 };
 
 describe('le trigger d’un ticket modifié', () => {
+  it('lit le ticket dans la charge utile de Forge (issue imbriquée)', async () => {
+    // Forme réelle de `avi:jira:updated:issue` : le ticket est sous `issue`.
+    // La forme `issueKey` en tête ne sort que des tests — c'est elle qui
+    // masquait l'incident du 13/11/2026 (rien n'était jamais ingéré).
+    const deps = makeDeps();
+    (deps.jira as FakeJira).withIssues(ISSUE);
+    await onJiraEvent({ issue: { id: '10002', key: 'TRAME-1' } }, deps);
+    const criteria = await deps.store.listCriteria({ scopeType: 'ticket', scope: 'TRAME-1' });
+    expect(criteria.map((criterion) => criterion.criterionKey)).toEqual(['AC-1', 'AC-2', 'AC-3']);
+  });
+
   it('extrait les critères des six origines et les inscrit', async () => {
     const deps = makeDeps();
     (deps.jira as FakeJira).withIssues(ISSUE);
