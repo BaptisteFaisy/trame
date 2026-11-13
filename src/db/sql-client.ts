@@ -10,10 +10,9 @@
  *   raw SQL with positional `?` parameters bound through `sql.prepare(...).bindParams(...)`;
  * - schema changes go through `migrationRunner.enqueue(name, ddl).run()`.
  *
- * `@forge/sql` is not in `package.json` (a shared file this module may not edit),
- * so the runtime binding is loaded lazily through a non-literal specifier: no
- * static import, no compile-time dependency, one single place to swap when the
- * dependency lands.
+ * `@forge/sql` is a direct dependency, but it is loaded lazily through a
+ * literal dynamic import: the Forge bundle keeps working, the tests keep
+ * using their in-memory fake, and there is one single place to swap.
  *
  * Rule: files < 500 lines, functions < 50 lines.
  */
@@ -67,14 +66,19 @@ interface ForgeSqlModule {
   migrationRunner?: ForgeMigrationRunner;
 }
 
-/** Kept as a plain `string` so TypeScript never tries to resolve the module. */
-const FORGE_SQL_MODULE: string = '@forge/sql';
-
 let loaded: Promise<ForgeSqlModule> | null = null;
 
-/** Loads `@forge/sql` once per warm runtime; throws a clear error if absent. */
+/**
+ * Loads `@forge/sql` once per warm runtime.
+ *
+ * The specifier is a LITERAL on purpose: the Forge bundler (webpack) resolves a
+ * literal dynamic import and includes the package in the bundle. With a
+ * variable, the bundle cannot see it and the app dies at runtime with
+ * `MODULE_NOT_FOUND` — the app then stores nothing at all (incident of
+ * 13/11/2026, seen in the logs of the development environment).
+ */
 export function loadForgeSql(): Promise<ForgeSqlModule> {
-  loaded ??= import(FORGE_SQL_MODULE).then((mod: unknown) => mod as ForgeSqlModule);
+  loaded ??= import('@forge/sql').then((mod: unknown) => mod as ForgeSqlModule);
   return loaded;
 }
 
