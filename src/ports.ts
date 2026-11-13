@@ -100,6 +100,13 @@ export interface IssueComment {
 
 export interface JiraGateway {
   getIssue(issueIdOrKey: string): Promise<IssueRef | null>;
+  /**
+   * Les clés des tickets, à partir de leurs identifiants — une seule requête.
+   * Jira donne à une fonction JQL des identifiants ; les registres de l'app
+   * sont indexés sur la clé du ticket (13/11/2026 : les quatre fonctions JQL
+   * ne voyaient rien à cause de cette différence).
+   */
+  issueKeysOf(issueIds: readonly string[]): Promise<Map<string, string>>;
   /** Incremental: what changed since the cursor (§18, §21 volume). */
   listIssuesSince(projectId: string, since: string, limit: number): Promise<IssueRef[]>;
   listIssuesOfSprint(projectId: string, sprint: string): Promise<IssueRef[]>;
