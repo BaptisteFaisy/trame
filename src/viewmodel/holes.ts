@@ -9,11 +9,11 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
-import type { Coverage, Hole, ScopeType } from '../types.js';
-import { coverageView, holeLine, tableHead } from './common.js';
-import type { CoverageView, HoleLine, RegisterRow, TableHead } from './common.js';
-import { text } from './labels.js';
+import type { Lang } from '../i18n/index';
+import type { Coverage, Hole, ScopeType } from '../types';
+import { coverageView, holeLine, tableHead } from './common';
+import type { CoverageView, HoleLine, RegisterRow, TableHead } from './common';
+import { text } from './labels';
 
 /* ------------------------------------------------------------------ entrée */
 

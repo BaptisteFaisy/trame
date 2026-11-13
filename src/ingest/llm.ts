@@ -18,10 +18,10 @@
  * Signature exigée par src/deps.ts : `createLlmGateway(store, clock)`.
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Clock, LlmGateway, SimilarityProposal, TrameStore } from '../ports.js';
-import type { Criterion, CriterionKind, Verification } from '../types.js';
-import { fingerprint } from '../collect/fingerprint.js';
-import { dayOf, estimateTokens } from './common.js';
+import type { Clock, LlmGateway, SimilarityProposal, TrameStore } from '../ports';
+import type { Criterion, CriterionKind, Verification } from '../types';
+import { fingerprint } from '../collect/fingerprint';
+import { dayOf, estimateTokens } from './common';
 
 /** Marque explicite des contenus non générés (honnêteté §22). */
 export const NOT_IMPLEMENTED = 'notImplemented';

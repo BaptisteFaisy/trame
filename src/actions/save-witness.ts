@@ -1,5 +1,5 @@
-import type { ActorContext, Deps } from '../ports.js';
-import { saveWitness as recordWitness } from '../domain/witness.js';
+import type { ActorContext, Deps } from '../ports';
+import { saveWitness as recordWitness } from '../domain/witness';
 import {
   coverageOf,
   envelope,
@@ -9,7 +9,7 @@ import {
   readPersonFilter,
   readScope,
   readText,
-} from './common.js';
+} from './common';
 
 /**
  * Action interne : conserve l'état daté d'une trame (§4, §12.4).

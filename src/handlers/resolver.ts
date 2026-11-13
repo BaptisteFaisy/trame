@@ -8,18 +8,18 @@
  * zones, coverage screen, weave history.
  */
 import type Resolver from '@forge/resolver';
-import type { Deps, ScreenRender } from '../ports.js';
-import { render as weaveMap } from './weave-map.js';
-import { render as criterionDetail } from './criterion-detail.js';
-import { render as holes } from './holes.js';
-import { render as perforations } from './perforations.js';
-import { render as dangling } from './dangling.js';
-import { render as bulletin } from './bulletin.js';
-import { render as certificate } from './certificate.js';
-import { render as validationQueue } from './validation-queue.js';
-import { render as zoneRisks } from './zone-risks.js';
-import { render as visibility } from './visibility.js';
-import { render as timeline } from './timeline.js';
+import type { Deps, ScreenRender } from '../ports';
+import { render as weaveMap } from './weave-map';
+import { render as criterionDetail } from './criterion-detail';
+import { render as holes } from './holes';
+import { render as perforations } from './perforations';
+import { render as dangling } from './dangling';
+import { render as bulletin } from './bulletin';
+import { render as certificate } from './certificate';
+import { render as validationQueue } from './validation-queue';
+import { render as zoneRisks } from './zone-risks';
+import { render as visibility } from './visibility';
+import { render as timeline } from './timeline';
 
 /** Resolver keys, in the order of §17. */
 export const SCREEN_KEYS = [

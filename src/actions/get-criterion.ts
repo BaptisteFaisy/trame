@@ -1,14 +1,14 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { Criterion, Link, Strength, Verification } from '../types.js';
-import { detectPerforations } from '../domain/perforations.js';
-import { STRENGTH_RANK } from '../defaults.js';
+import type { ActorContext, Deps } from '../ports';
+import type { Criterion, Link, Strength, Verification } from '../types';
+import { detectPerforations } from '../domain/perforations';
+import { STRENGTH_RANK } from '../defaults';
 import {
   blindSpotsOf,
   envelope,
   loadCriterion,
   readPersonFilter,
   say,
-} from './common.js';
+} from './common';
 
 /** Une liaison, telle qu'elle apparaît dans l'historique du critère. */
 function linkLine(link: Link, currentHash: string): Record<string, unknown> {

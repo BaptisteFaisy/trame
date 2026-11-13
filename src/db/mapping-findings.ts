@@ -6,8 +6,8 @@
  * the judgement is meaningless without them (§8.2, §22 explicability). A hole
  * carries the terms of the métré, so the score can always be explained (§11).
  */
-import type { Dangling, Hole, Perforation, PriorityTerm, Proposal, ProposalPayload } from '../types.js';
-import type { Row } from './mapping-common.js';
+import type { Dangling, Hole, Perforation, PriorityTerm, Proposal, ProposalPayload } from '../types';
+import type { Row } from './mapping-common';
 import {
   fromSqlTimestamp,
   optionalText,
@@ -16,7 +16,7 @@ import {
   toNumber,
   toJson,
   toSqlTimestamp,
-} from './mapping-common.js';
+} from './mapping-common';
 
 export const PERFORATION_COLUMNS = [
   'id',

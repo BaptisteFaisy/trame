@@ -33,10 +33,10 @@ import type {
   MetricRule,
   Verification,
   ZoneRisk,
-} from '../types.js';
-import { DEFAULT_SETTINGS, DERIVED_LINK_THRESHOLD } from '../defaults.js';
-import { scoreHole } from './metric.js';
-import { findZoneRisk } from './zones.js';
+} from '../types';
+import { DEFAULT_SETTINGS, DERIVED_LINK_THRESHOLD } from '../defaults';
+import { scoreHole } from './metric';
+import { findZoneRisk } from './zones';
 
 /* ------------------------------------------------------------------ entrée */
 

@@ -9,11 +9,11 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
-import type { Link, Proposal, ScopeType } from '../types.js';
-import { codedState, tableHead } from './common.js';
-import type { CodedState, RegisterRow, TableHead } from './common.js';
-import { text } from './labels.js';
+import type { Lang } from '../i18n/index';
+import type { Link, Proposal, ScopeType } from '../types';
+import { codedState, tableHead } from './common';
+import type { CodedState, RegisterRow, TableHead } from './common';
+import { text } from './labels';
 
 export interface ValidationQueueInput {
   language: Lang;

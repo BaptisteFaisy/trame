@@ -23,8 +23,15 @@
 
 ### Teamwork Graph (bonus principal)
 
-- `manifest.yml` demande **douze permissions `graph:*`** (de `graph:work-item`
-  à `graph:atlassian-user`) ; dix-neuf permissions au total.
+- `manifest.yml` demande **dix permissions `read:graph:*`** (issues Jira,
+  work items externes, projets, commits, demandes de fusion, deploiements,
+  documents, pages Confluence, utilisateurs, services) ; dix-huit permissions
+  au total. Les objets de test du graphe (`test-plan`, `test-run`,
+  `test-execution`, `test-status`) **n'ont aucune permission publiable** au
+  13/11/2026 : le catalogue Forge (646 portees, CLI 14.2) n'en expose pas
+  une seule. Les actes de verification sont donc lus la ou ils existent
+  vraiment — tickets Jira, commits, demandes de fusion, deploiements — et la
+  couverture se calcule sur ces sources.
 - le connecteur est **écrit et câblé** : `src/ingest/graph.ts` exécute la
   requête documentée du type d'objet (`src/ingest/graph-queries.ts`),
   convertit les nœuds (`src/ingest/graph-mapping.ts`) et lit au nom de
@@ -77,19 +84,24 @@
 ### Marketplace
 
 - `manifest.yml` est complet et cohérent : application Jira (Confluence
-  optionnel), runtime `nodejs22.x` / x86_64 / 512 Mo, **dix-neuf types de
+  optionnel), runtime `nodejs22.x` / x86_64 / 512 Mo, **dix-huit types de
   modules** — `jira:issuePanel`, `jira:customField` ×3, `jira:globalPage`,
   `jira:projectPage`, `jira:dashboardGadget`, `jira:jqlFunction` ×4,
-  `jira:workflowValidator`, `confluence:globalPage`, `confluence:macro`,
+  `jira:workflowValidator`, `confluence:globalPage`,
   `webtrigger`, `consumer`, `trigger`, `scheduledTrigger`, `sql`, `llm`,
-  `function` ×11, `action` ×18, `rovo:agent`, `rovo:mcp` — et **dix-neuf
-  permissions** dont **douze `graph:*`**.
+  `function` ×11, `action` ×18, `rovo:agent`, `rovo:mcp` — et **dix-huit
+  permissions** dont **dix `read:graph:*`**. Le module `confluence:macro`
+  n'existe pas dans la CLI Forge 14.2 : il a été retiré au lieu d'écrire une
+  forme qui ne se déploie pas (le bulletin se lit dans Jira).
 - `LICENSE` (MIT), `README.md`, et le dossier `docs/` (spécification complète,
   contrats, architecture, recette, instructions aux jugés, scénario vidéo).
-- **état honnête** : `forge deploy` n'a pas encore été exécuté et l'identifiant
-  d'application du manifeste est provisoire
-  (`ari:cloud:ecosystem::app/3dfebaa0-bb65-471b-be6b-aaee3033ed99`) : il sera
-  remplacé par `forge create` avant la mise en Marketplace. Les modules
+- **état honnête** : l'application Forge existe et tourne — `forge create`
+  (espace développeur `laddition`), `forge lint` sans erreur,
+  `forge deploy -e development`, puis installation sur le site réel
+  `one-atlas-cndz.atlassian.net` en **Jira** et en **Confluence**
+  (identifiant `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51`).
+  Le bundleur Forge (webpack/ts-loader) ne résout pas les imports relatifs
+  `./x.js` : le code source les écrit sans extension (convention Forge). Les modules
   `trigger`, `scheduledTrigger`, `consumer` et `webtrigger` sont déclarés dans
   le manifeste et câblés dans `src/index.ts`, mais leurs corps restent des
   souches dans `origin/main` (ils arrivent avec `origin/lot/l10-triggers`).

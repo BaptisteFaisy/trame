@@ -14,14 +14,14 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
-import { t } from '../i18n/index.js';
-import type { Coverage, Hole, ScopeType, Witness } from '../types.js';
-import { comparableTo } from '../domain/witness.js';
-import { conclusion } from '../domain/percent.js';
-import { coverageView, figure, holeLine } from './common.js';
-import type { AxisLine, CoverageView, Figure, HoleLine } from './common.js';
-import { text } from './labels.js';
+import type { Lang } from '../i18n/index';
+import { t } from '../i18n/index';
+import type { Coverage, Hole, ScopeType, Witness } from '../types';
+import { comparableTo } from '../domain/witness';
+import { conclusion } from '../domain/percent';
+import { coverageView, figure, holeLine } from './common';
+import type { AxisLine, CoverageView, Figure, HoleLine } from './common';
+import { text } from './labels';
 
 /* ------------------------------------------------------------------ entrée */
 

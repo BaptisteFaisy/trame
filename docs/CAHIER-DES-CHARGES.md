@@ -366,7 +366,8 @@ modules:
   jira:dashboardGadget:         # bulletin de la version en un coup d'œil
   jira:workflowValidator:       # optionnel (TR-30) : alerte de non-régression à la clôture
   confluence:globalPage:        # certificats de trame
-  confluence:macro:             # bulletin et Synthèse de trame dans un tableau de bord
+  confluence:macro:             # absent : `confluence:macro` n'existe pas dans la CLI Forge 14.2
+  #   (le bulletin se lit dans Jira : panneau de projet, encart de tableau de bord)
   trigger:                      # ticket modifié, critère ajouté, PR liée, test exécuté
   scheduledTrigger:             # nuit : recalcul des perforations, des fils détendus, du bulletin
   consumer:                     # recalculs longs, jusqu'à 900 s, par tranches avec curseur
@@ -374,14 +375,25 @@ modules:
   sql:
   llm:                          # propositions de liaison, reformulations, brouillons de test
 permissions:
-  scopes:                       # read:issue-details:jira, write:issue-details:jira (commentaires),
+  scopes:                       # read:issue-details:jira, write:issue:jira (commentaires),
                                 # read:confluence-content.all, write:confluence-content,
-                                # read:me, read:jira-work, read:jira-user,
-                                # graph:work-item, graph:test-plan, graph:test-run,
-                                # graph:test-execution, graph:test-status, graph:commit,
-                                # graph:pull-request, graph:deployment, graph:project,
-                                # graph:software-service, graph:document, graph:atlassian-user
+                                # read:me, read:jira-work, write:jira-work, read:jira-user,
+                                # read:graph:issue:jira, read:graph:work-item:external,
+                                # read:graph:project:jira, read:graph:commit:external,
+                                # read:graph:pull-request:external, read:graph:deployment:external,
+                                # read:graph:document:external, read:graph:page:confluence,
+                                # read:graph:user:atlassian, read:graph:service:external
 ```
+
+> **Rectificatif du 13/11/2026 — verifie contre la CLI Forge 14.2.** Les objets
+> de test du graphe (`test-plan`, `test-run`, `test-execution`, `test-status`)
+> **n'ont aucune permission publiable** : le catalogue Forge (646 portees)
+> n'en expose pas une seule, et `forge lint` refuse les quatre noms. Les
+> actes de verification sont donc lus la ou ils existent vraiment — tickets
+> Jira, commits, demandes de fusion, deploiements — et la couverture se
+> calcule sur ces sources. Le §10 « un droit par type d'objet » reste vrai,
+> mais la liste des droits est celle ci-dessus, pas celle qu'annoncait la
+> premiere version de ce cahier.
 
 ### Ce qu'impose la plateforme
 
@@ -437,7 +449,7 @@ Rien n'est recopié :
 
 ### Vérifié dans la documentation (11 novembre 2026)
 
-- **Teamwork Graph** : lecture GraphQL en Preview, requêtes prêtes à l'emploi ou **Cypher persisté** (le Cypher brut est refusé aux nouvelles apps), au nom d'un utilisateur, **un droit par type d'objet**, droit manquant = résultats omis **sans erreur**. La liste des types comprend bien `test-plan`, `test-run`, `test-execution`, `test-status`, `work-item`, `commit`, `pull-request`, `deployment`, `document`, `project`, `software-service`, `AtlassianUser`, `AtlassianTeam` : les objets de qualité sont donc disponibles et peu utilisés.
+- **Teamwork Graph** : lecture GraphQL en Preview, requêtes prêtes à l'emploi ou **Cypher persisté** (le Cypher brut est refusé aux nouvelles apps), au nom d'un utilisateur, **un droit par type d'objet**, droit manquant = résultats omis **sans erreur**. La liste des types comprend bien `test-plan`, `test-run`, `test-execution`, `test-status`, `work-item`, `commit`, `pull-request`, `deployment`, `document`, `project`, `software-service`, `AtlassianUser`, Équipe AtlassianTeam`. Les objets de qualité sont **présents dans le modèle du graphe et peu utilisés, mais aucune permission publique ne permet de les lire depuis une app Forge** (rectificatif §20, 13/11/2026) : la v1 les lit donc par leurs sources réelles (tickets, commits, fusions, déploiements).
 - **Fonctions** : 25 s en standard ; jusqu'à **900 s** via `consumer` ou déclencheur planifié ; 55 s pour action, agent et web trigger ; payload 5 Mo, 500 Ko depuis une interface custom.
 - **Déclencheurs planifiés** : 5 au plus par app, un seul à 5 minutes.
 - **LLM hébergé** : Haiku (200K/64K), Sonnet et Opus (1M/128K) ; 100 invites/min par installation, 500K jetons/min par modèle.

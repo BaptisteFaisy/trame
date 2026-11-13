@@ -18,7 +18,7 @@
  *
  * Rules: files < 500 lines, functions < 50 lines.
  */
-import type { ScopeRef, ScopeType } from '../types.js';
+import type { ScopeRef, ScopeType } from '../types';
 import type {
   Budget,
   Coverage,
@@ -35,12 +35,12 @@ import type {
   Witness,
   ZoneRisk,
   Verification,
-} from '../types.js';
-import type { TrameStore } from '../ports.js';
-import type { SqlClient } from './sql-client.js';
-import type { Row } from './mapping-common.js';
-import { toNumber } from './mapping-common.js';
-import { and, createTable, eq, gte, isNull, like, type Where } from './table.js';
+} from '../types';
+import type { TrameStore } from '../ports';
+import type { SqlClient } from './sql-client';
+import type { Row } from './mapping-common';
+import { toNumber } from './mapping-common';
+import { and, createTable, eq, gte, isNull, like, type Where } from './table';
 import {
   CRITERION_COLUMNS,
   CRITERION_VERSION_COLUMNS,
@@ -48,7 +48,7 @@ import {
   criterionVersionToRow,
   rowToCriterion,
   rowToCriterionVersion,
-} from './mapping-criteria.js';
+} from './mapping-criteria';
 import {
   LINK_COLUMNS,
   VERIFICATION_COLUMNS,
@@ -56,7 +56,7 @@ import {
   rowToLink,
   rowToVerification,
   verificationToRow,
-} from './mapping-verifications.js';
+} from './mapping-verifications';
 import {
   DANGLING_COLUMNS,
   HOLE_COLUMNS,
@@ -70,7 +70,7 @@ import {
   rowToHole,
   rowToPerforation,
   rowToProposal,
-} from './mapping-findings.js';
+} from './mapping-findings';
 import {
   COVERAGE_COLUMNS,
   CURSOR_COLUMNS,
@@ -91,8 +91,8 @@ import {
   rowToZoneRisk,
   witnessToRow,
   zoneRiskToRow,
-} from './mapping-measures.js';
-import { valuesOf } from './mapping-common.js';
+} from './mapping-measures';
+import { valuesOf } from './mapping-common';
 
 /** A part of the store: the assembly merges them into a `TrameStore`. */
 type StorePart = Partial<TrameStore>;

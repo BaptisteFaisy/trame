@@ -4,9 +4,9 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import { scopeFrom, languageFrom } from './screen.js';
-import { buildValidationQueue } from '../viewmodel/validation-queue.js';
+import type { Deps } from '../ports';
+import { scopeFrom, languageFrom } from './screen';
+import { buildValidationQueue } from '../viewmodel/validation-queue';
 
 export async function render(deps: Deps, payload: Record<string, unknown>): Promise<unknown> {
   const scope = scopeFrom(payload) ?? { scopeType: 'project' as const, scope: String(payload['scope'] ?? 'TRAME') };

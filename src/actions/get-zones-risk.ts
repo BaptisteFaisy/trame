@@ -1,7 +1,7 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { MetricRule, ZoneRisk } from '../types.js';
-import { scoreHole } from '../domain/metric.js';
-import { DEFAULT_SETTINGS } from '../defaults.js';
+import type { ActorContext, Deps } from '../ports';
+import type { MetricRule, ZoneRisk } from '../types';
+import { scoreHole } from '../domain/metric';
+import { DEFAULT_SETTINGS } from '../defaults';
 import {
   coverageOf,
   envelope,
@@ -10,7 +10,7 @@ import {
   messagesOf,
   readPersonFilter,
   readScope,
-} from './common.js';
+} from './common';
 
 /**
  * Une zone à risque, avec le terme de métré qu'elle produit (§11).

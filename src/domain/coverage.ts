@@ -38,8 +38,8 @@ import type {
   ScopeType,
   Strength,
   Verification,
-} from '../types.js';
-import { DERIVED_LINK_THRESHOLD, STRENGTH_RANK } from '../defaults.js';
+} from '../types';
+import { DERIVED_LINK_THRESHOLD, STRENGTH_RANK } from '../defaults';
 
 /* ------------------------------------------------------------------ entrée */
 

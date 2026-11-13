@@ -1,6 +1,6 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { Coverage } from '../types.js';
-import type { MessageKey } from '../i18n/index.js';
+import type { ActorContext, Deps } from '../ports';
+import type { Coverage } from '../types';
+import type { MessageKey } from '../i18n/index';
 import {
   coverageOf,
   envelope,
@@ -10,8 +10,8 @@ import {
   readPersonFilter,
   readScope,
   readText,
-} from './common.js';
-import type { CoverageFigures } from './common.js';
+} from './common';
+import type { CoverageFigures } from './common';
 
 /** La ligne de couverture demandée : déclarée, provisoire, ou les deux. */
 type CoverageMode = 'declared' | 'provisional' | 'all';

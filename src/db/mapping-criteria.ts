@@ -6,8 +6,8 @@
  * `ScopeRef` list that makes a criterion visible to a sprint, a project or a
  * version — the app never stores a person's statistics here (§5).
  */
-import type { Criterion, CriterionVersion, ScopeRef } from '../types.js';
-import type { Row } from './mapping-common.js';
+import type { Criterion, CriterionVersion, ScopeRef } from '../types';
+import type { Row } from './mapping-common';
 import {
   fromSqlTimestamp,
   optionalText,
@@ -17,7 +17,7 @@ import {
   toJson,
   toNumber,
   toSqlTimestamp,
-} from './mapping-common.js';
+} from './mapping-common';
 
 export const CRITERION_COLUMNS = [
   'id',

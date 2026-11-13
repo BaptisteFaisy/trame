@@ -23,9 +23,9 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { IssueComment } from '../ports.js';
-import type { Strength, Verification, VerificationForm } from '../types.js';
-import { DEFAULT_STRENGTH_BY_FORM } from '../defaults.js';
+import type { IssueComment } from '../ports';
+import type { Strength, Verification, VerificationForm } from '../types';
+import { DEFAULT_STRENGTH_BY_FORM } from '../defaults';
 
 /** Ce qui est journalisé quand un commentaire est écarté. */
 export type CommentReport = (message: string, meta?: unknown) => void;

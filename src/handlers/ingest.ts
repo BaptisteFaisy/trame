@@ -9,8 +9,8 @@
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import type { Deps } from '../ports.js';
-import type { Verification } from '../types.js';
+import type { Deps } from '../ports';
+import type { Verification } from '../types';
 
 /** Requête du web trigger (urlFormat v2) : corps brut, pour la signature. */
 export interface CiWebRequest {

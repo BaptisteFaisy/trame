@@ -15,8 +15,8 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Coverage, PercentWithCount } from '../types.js';
-import { MIN_SAMPLE_FOR_CONCLUSION } from '../defaults.js';
+import type { Coverage, PercentWithCount } from '../types';
+import { MIN_SAMPLE_FOR_CONCLUSION } from '../defaults';
 
 /** Le verdict sur un effectif : on conclut, ou on refuse de conclure. */
 export type Conclusion = 'conclusive' | 'not-enough-history';

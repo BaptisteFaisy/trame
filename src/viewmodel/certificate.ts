@@ -12,9 +12,9 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
-import { t } from '../i18n/index.js';
-import { label } from '../i18n/index.js';
+import type { Lang } from '../i18n/index';
+import { t } from '../i18n/index';
+import { label } from '../i18n/index';
 import type {
   Coverage,
   Criterion,
@@ -22,11 +22,11 @@ import type {
   Perforation,
   ScopeType,
   VerificationForm,
-} from '../types.js';
-import type { CertificateLine } from '../types.js';
-import { coverageView, danglingLine, perforationLine, tableHead } from './common.js';
-import type { CoverageView, DanglingLine, PerforationLine, RegisterRow, TableHead } from './common.js';
-import { text } from './labels.js';
+} from '../types';
+import type { CertificateLine } from '../types';
+import { coverageView, danglingLine, perforationLine, tableHead } from './common';
+import type { CoverageView, DanglingLine, PerforationLine, RegisterRow, TableHead } from './common';
+import { text } from './labels';
 
 /* ------------------------------------------------------------------ entrée */
 

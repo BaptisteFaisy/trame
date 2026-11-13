@@ -19,8 +19,8 @@ import type {
   MetricRule,
   Witness,
   ZoneRisk,
-} from '../types.js';
-import type { Row } from './mapping-common.js';
+} from '../types';
+import type { Row } from './mapping-common';
 import {
   fromSqlTimestamp,
   optionalText,
@@ -29,7 +29,7 @@ import {
   toNumber,
   toJson,
   toSqlTimestamp,
-} from './mapping-common.js';
+} from './mapping-common';
 
 export const COVERAGE_COLUMNS = [
   'id',

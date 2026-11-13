@@ -8,11 +8,11 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps, RecomputeMessage } from '../ports.js';
-import type { ScopeRef } from '../types.js';
-import { collect as collectGraph } from '../ingest/graph.js';
-import { weave } from '../domain/links.js';
-import { recomputeScope } from './scheduled.js';
+import type { Deps, RecomputeMessage } from '../ports';
+import type { ScopeRef } from '../types';
+import { collect as collectGraph } from '../ingest/graph';
+import { weave } from '../domain/links';
+import { recomputeScope } from './scheduled';
 
 /** Combien de tickets une tranche de critères traite. */
 export const SLICE_SIZE = 25;
@@ -25,9 +25,9 @@ export async function sliceCriteria(
   const cursor = await deps.store.getCursor(message.scope, 'criteria');
   const since = cursor?.lastModifiedAt ?? '1970-01-01T00:00:00.000Z';
   const issues = await deps.jira.listIssuesSince(message.scope, since, SLICE_SIZE);
-  const { storeCriteria } = await import('./events.js');
+  const { storeCriteria } = await import('./events');
   for (const issue of issues) {
-    const { materialsOf } = await import('./events.js');
+    const { materialsOf } = await import('./events');
     await storeCriteria(deps, issue, materialsOf(issue));
   }
   const last = issues[issues.length - 1];

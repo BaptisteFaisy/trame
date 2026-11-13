@@ -19,11 +19,11 @@
  * Signature exigée par src/deps.ts : `createPipelineGateway(clock)`.
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Clock, Logger, PipelineGateway } from '../ports.js';
-import type { Strength, Verification } from '../types.js';
-import { DEFAULT_STRENGTH_BY_FORM } from '../defaults.js';
-import { consoleLogger, depsWarning, normalizeStatus, safe } from './common.js';
-import { ticketKeyInName } from './refs.js';
+import type { Clock, Logger, PipelineGateway } from '../ports';
+import type { Strength, Verification } from '../types';
+import { DEFAULT_STRENGTH_BY_FORM } from '../defaults';
+import { consoleLogger, depsWarning, normalizeStatus, safe } from './common';
+import { ticketKeyInName } from './refs';
 
 /** La version du schéma que ce module sait lire. Toute autre est refusée. */
 export const PIPELINE_SCHEMA = 'trame.ci.v1';

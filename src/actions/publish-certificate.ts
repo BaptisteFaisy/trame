@@ -1,5 +1,5 @@
-import type { ActorContext, Deps } from '../ports.js';
-import { buildCertificate, certificateToMarkdown } from '../domain/certificate.js';
+import type { ActorContext, Deps } from '../ports';
+import { buildCertificate, certificateToMarkdown } from '../domain/certificate';
 import {
   coverageOf,
   envelope,
@@ -10,7 +10,7 @@ import {
   readScope,
   readText,
   refusal,
-} from './common.js';
+} from './common';
 
 /**
  * Action interne : génère la page Confluence du certificat (§12.5).

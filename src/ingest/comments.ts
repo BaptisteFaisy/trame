@@ -15,12 +15,12 @@
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
 import api, { route } from '@forge/api';
-import type { Clock, IssueComment, JiraGateway, Logger } from '../ports.js';
-import type { Deps, Scope } from '../ports.js';
-import type { Verification } from '../types.js';
-import { consoleLogger, depsWarning, safe } from './common.js';
-import { adfToText } from './jira.js';
-import { toVerifications } from './comments-mapping.js';
+import type { Clock, IssueComment, JiraGateway, Logger } from '../ports';
+import type { Deps, Scope } from '../ports';
+import type { Verification } from '../types';
+import { consoleLogger, depsWarning, safe } from './common';
+import { adfToText } from './jira';
+import { toVerifications } from './comments-mapping';
 
 /** La lecture des commentaires d'un ticket — injectable. */
 export type CommentTransport = (issueId: string) => Promise<IssueComment[]>;

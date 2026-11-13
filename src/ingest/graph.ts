@@ -24,12 +24,12 @@
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
 import api from '@forge/api';
-import type { Deps, GraphGateway, GraphObject, Logger, Scope } from '../ports.js';
-import type { ScopeRef, Verification, VisibilityProbe } from '../types.js';
-import { absentProbe, depsWarning, safe } from './common.js';
-import { fromGraphNodes, toVerifications } from './graph-mapping.js';
-import { graphQueryFor, probeCaseFor } from './graph-queries.js';
-import type { GraphQuerySpec } from './graph-queries.js';
+import type { Deps, GraphGateway, GraphObject, Logger, Scope } from '../ports';
+import type { ScopeRef, Verification, VisibilityProbe } from '../types';
+import { absentProbe, depsWarning, safe } from './common';
+import { fromGraphNodes, toVerifications } from './graph-mapping';
+import { graphQueryFor, probeCaseFor } from './graph-queries';
+import type { GraphQuerySpec } from './graph-queries';
 
 /** Détail de repli quand le transport n'est pas disponible. */
 export const GRAPH_TRANSPORT_UNAVAILABLE = 'transport Teamwork Graph indisponible';

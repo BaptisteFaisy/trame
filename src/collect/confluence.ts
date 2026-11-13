@@ -23,9 +23,9 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import { buildCriteria, checkboxContent, isTitleLine } from './normalize.js';
-import type { CriterionCandidate } from './normalize.js';
-import type { CollectInput, ExtractedCriterion } from './types.js';
+import { buildCriteria, checkboxContent, isTitleLine } from './normalize';
+import type { CriterionCandidate } from './normalize';
+import type { CollectInput, ExtractedCriterion } from './types';
 
 /** Un bloc de code markdown : on ne lit pas un exemple comme une exigence. */
 const CODE_FENCE = /^\s*(`{3,}|~{3,})/;

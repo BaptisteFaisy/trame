@@ -27,9 +27,9 @@ import {
   hasRequirementVerb,
   isListLine,
   isTitleLine,
-} from './normalize.js';
-import type { CriterionCandidate } from './normalize.js';
-import type { CollectInput, ExtractedCriterion } from './types.js';
+} from './normalize';
+import type { CriterionCandidate } from './normalize';
+import type { CollectInput, ExtractedCriterion } from './types';
 
 /** Ouverture ou fermeture d'un bloc de code markdown. */
 const CODE_FENCE = /^\s*(`{3,}|~{3,})/;

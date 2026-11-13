@@ -10,11 +10,11 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
-import type { Coverage, Perforation, PerforationClass, ScopeType } from '../types.js';
-import { coverageView, perforationLine, tableHead } from './common.js';
-import type { CoverageView, PerforationLine, RegisterRow, TableHead } from './common.js';
-import { text } from './labels.js';
+import type { Lang } from '../i18n/index';
+import type { Coverage, Perforation, PerforationClass, ScopeType } from '../types';
+import { coverageView, perforationLine, tableHead } from './common';
+import type { CoverageView, PerforationLine, RegisterRow, TableHead } from './common';
+import { text } from './labels';
 
 /* ------------------------------------------------------------------ entrée */
 

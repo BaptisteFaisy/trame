@@ -4,10 +4,10 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import { languageFrom, findCriterion, noCriterion } from './screen.js';
-import { computeCoverage } from '../domain/coverage.js';
-import { buildCriterionDetail } from '../viewmodel/criterion-detail.js';
+import type { Deps } from '../ports';
+import { languageFrom, findCriterion, noCriterion } from './screen';
+import { computeCoverage } from '../domain/coverage';
+import { buildCriterionDetail } from '../viewmodel/criterion-detail';
 
 export async function render(deps: Deps, payload: Record<string, unknown>): Promise<unknown> {
   const language = languageFrom(payload);

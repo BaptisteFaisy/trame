@@ -1,5 +1,5 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { Criterion, Perforation } from '../types.js';
+import type { ActorContext, Deps } from '../ports';
+import type { Criterion, Perforation } from '../types';
 import {
   coverageOf,
   envelope,
@@ -10,8 +10,8 @@ import {
   readScope,
   readText,
   refusal,
-} from './common.js';
-import type { Refusal } from './common.js';
+} from './common';
+import type { Refusal } from './common';
 
 /** L'âge minimal demandé, en jours. */
 type AgeRead = { ok: true; days: number | null } | { ok: false; refusal: Refusal };

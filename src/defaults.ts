@@ -2,8 +2,8 @@
  * Frozen defaults (§4, §8, §9, §11). Changing a number here changes what the
  * app calls a hole: every value is quoted in docs/CONTRACTS.md and tested.
  */
-import type { Settings } from './ports.js';
-import type { CriterionKind } from './types.js';
+import type { Settings } from './ports';
+import type { CriterionKind } from './types';
 
 /** Above this confidence a derived link shows as provisional coverage (§9.2). */
 export const DERIVED_LINK_THRESHOLD = 0.85;

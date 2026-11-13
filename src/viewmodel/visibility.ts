@@ -12,12 +12,12 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
-import type { ScopeType, VisibilityProbe } from '../types.js';
-import { codedState, tableHead } from './common.js';
-import type { Motif, RegisterRow, TableHead } from './common.js';
-import { text } from './labels.js';
-import { label } from '../i18n/index.js';
+import type { Lang } from '../i18n/index';
+import type { ScopeType, VisibilityProbe } from '../types';
+import { codedState, tableHead } from './common';
+import type { Motif, RegisterRow, TableHead } from './common';
+import { text } from './labels';
+import { label } from '../i18n/index';
 
 export interface VisibilityInput {
   language: Lang;

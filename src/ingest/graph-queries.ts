@@ -20,7 +20,7 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { ScopeRef } from '../types.js';
+import type { ScopeRef } from '../types';
 
 /** La façon dont les variables de la requête sont construites. */
 export type GraphVariables = (scope: ScopeRef, since?: string) => Record<string, unknown>;

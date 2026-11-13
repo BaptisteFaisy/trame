@@ -1,6 +1,6 @@
-import type { ActorContext, Deps } from '../ports.js';
-import { decideLink } from './link-decision.js';
-import { readPersonFilter, say } from './common.js';
+import type { ActorContext, Deps } from '../ports';
+import { decideLink } from './link-decision';
+import { readPersonFilter, say } from './common';
 
 /**
  * Liaison confirmée (retricotage, §9.4).

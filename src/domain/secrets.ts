@@ -16,7 +16,7 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { SecretScanner } from '../ports.js';
+import type { SecretScanner } from '../ports';
 
 /** Un détecteur : un libellé (ce qui sort) et un motif (ce qui ne sort pas). */
 interface Detector {

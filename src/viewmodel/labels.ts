@@ -8,7 +8,7 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
+import type { Lang } from '../i18n/index';
 
 /** Le vocabulaire d'affichage des écrans : en-têtes et libellés de figure. */
 const TEXT: Record<Lang, Record<string, string>> = {

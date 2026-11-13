@@ -4,10 +4,10 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import { scopeFrom, languageFrom } from './screen.js';
-import { GRAPH_OBJECT_TYPES } from '../ports.js';
-import { buildVisibility } from '../viewmodel/visibility.js';
+import type { Deps } from '../ports';
+import { scopeFrom, languageFrom } from './screen';
+import { GRAPH_OBJECT_TYPES } from '../ports';
+import { buildVisibility } from '../viewmodel/visibility';
 
 export async function render(deps: Deps, payload: Record<string, unknown>): Promise<unknown> {
   const scope = scopeFrom(payload) ?? { scopeType: 'project' as const, scope: String(payload['scope'] ?? 'TRAME') };

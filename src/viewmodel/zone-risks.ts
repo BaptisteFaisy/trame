@@ -7,11 +7,11 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
-import type { ScopeType, ZoneRisk } from '../types.js';
-import { codedState, tableHead } from './common.js';
-import type { RegisterRow, TableHead } from './common.js';
-import { stateWord, text } from './labels.js';
+import type { Lang } from '../i18n/index';
+import type { ScopeType, ZoneRisk } from '../types';
+import { codedState, tableHead } from './common';
+import type { RegisterRow, TableHead } from './common';
+import { stateWord, text } from './labels';
 
 export interface ZoneRisksInput {
   language: Lang;

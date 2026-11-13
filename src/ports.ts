@@ -31,7 +31,7 @@ import type {
   VisibilityProbe,
   Witness,
   ZoneRisk,
-} from './types.js';
+} from './types';
 
 /* --------------------------------------------------------------- primitives */
 

@@ -12,8 +12,8 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import type { Coverage, ScopeType, Witness } from '../types.js';
+import type { Deps } from '../ports';
+import type { Coverage, ScopeType, Witness } from '../types';
 
 /**
  * Enregistre le témoin d'une couverture et le rend.

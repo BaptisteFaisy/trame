@@ -16,10 +16,10 @@
  * Module pur : jamais d'import `@forge/*` (docs/CONTRACTS.md §3).
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import { MIN_CRITERION_LENGTH, UNFALSIFIABLE_MARKERS } from '../defaults.js';
-import { createSecretScanner } from '../domain/secrets.js';
-import type { CriterionTable } from '../ports.js';
-import type { CollectInput, ExtractedCriterion } from './types.js';
+import { MIN_CRITERION_LENGTH, UNFALSIFIABLE_MARKERS } from '../defaults';
+import { createSecretScanner } from '../domain/secrets';
+import type { CriterionTable } from '../ports';
+import type { CollectInput, ExtractedCriterion } from './types';
 
 /** Marqueur de liste ou de numérotation en tête de ligne. */
 const LIST_MARKER =

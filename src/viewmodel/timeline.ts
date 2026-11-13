@@ -8,12 +8,12 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
-import type { ScopeType, Witness } from '../types.js';
-import { comparableTo } from '../domain/witness.js';
-import { tableHead } from './common.js';
-import type { RegisterRow, TableHead } from './common.js';
-import { text } from './labels.js';
+import type { Lang } from '../i18n/index';
+import type { ScopeType, Witness } from '../types';
+import { comparableTo } from '../domain/witness';
+import { tableHead } from './common';
+import type { RegisterRow, TableHead } from './common';
+import { text } from './labels';
 
 export interface TimelineInput {
   language: Lang;

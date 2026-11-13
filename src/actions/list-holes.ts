@@ -1,7 +1,7 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { Criterion, Hole } from '../types.js';
-import { findHoles } from '../domain/holes.js';
-import { explainScore } from '../domain/metric.js';
+import type { ActorContext, Deps } from '../ports';
+import type { Criterion, Hole } from '../types';
+import { findHoles } from '../domain/holes';
+import { explainScore } from '../domain/metric';
 import {
   coverageOf,
   envelope,
@@ -13,8 +13,8 @@ import {
   readScope,
   readText,
   refusal,
-} from './common.js';
-import type { Refusal } from './common.js';
+} from './common';
+import type { Refusal } from './common';
 
 /** Le seuil de priorité demandé : un score, ou rien. */
 type PriorityRead = { ok: true; minimum: number } | { ok: false; refusal: Refusal };

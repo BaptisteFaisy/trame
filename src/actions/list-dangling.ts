@@ -1,5 +1,5 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { Dangling } from '../types.js';
+import type { ActorContext, Deps } from '../ports';
+import type { Dangling } from '../types';
 import {
   coverageOf,
   envelope,
@@ -8,7 +8,7 @@ import {
   messagesOf,
   readPersonFilter,
   readScope,
-} from './common.js';
+} from './common';
 
 /** Un fil détendu : l'acte mort, la raison, et ce qu'il retire (§8.3). */
 function danglingLine(thread: Dangling): Record<string, unknown> {

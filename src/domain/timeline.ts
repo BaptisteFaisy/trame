@@ -11,8 +11,8 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import type { Coverage, ScopeType } from '../types.js';
+import type { Deps } from '../ports';
+import type { Coverage, ScopeType } from '../types';
 
 /** Le tri du port : du plus récent au plus ancien (dates ISO 8601). */
 function newestFirst(rows: readonly Coverage[]): Coverage[] {

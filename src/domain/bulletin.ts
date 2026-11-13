@@ -13,8 +13,8 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Bulletin, Coverage, Criterion, Hole, ScopeType, Witness } from '../types.js';
-import { percent } from './percent.js';
+import type { Bulletin, Coverage, Criterion, Hole, ScopeType, Witness } from '../types';
+import { percent } from './percent';
 
 /** Combien de trous prioritaires le bulletin affiche (§12.4). */
 export const TOP_HOLES_LIMIT = 10;

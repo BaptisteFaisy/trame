@@ -26,7 +26,7 @@ import {
   PERFORATION_DRY_DAYS,
   PERFORATION_FRESH_DAYS,
   PERFORATION_MULTIPLE_CHANGES,
-} from '../defaults.js';
+} from '../defaults';
 import type {
   Criterion,
   CriterionVersion,
@@ -34,7 +34,7 @@ import type {
   Perforation,
   PerforationClass,
   Verification,
-} from '../types.js';
+} from '../types';
 
 /** Ce que le jugement a besoin de lire — rien de plus. */
 export interface PerforationInput {

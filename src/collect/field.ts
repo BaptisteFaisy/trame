@@ -21,9 +21,9 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import { buildCriteria, cleanText, isTitleLine } from './normalize.js';
-import type { CriterionCandidate } from './normalize.js';
-import type { CollectInput, ExtractedCriterion } from './types.js';
+import { buildCriteria, cleanText, isTitleLine } from './normalize';
+import type { CriterionCandidate } from './normalize';
+import type { CollectInput, ExtractedCriterion } from './types';
 
 /**
  * Les lignes du champ deviennent des candidats : ligne vide ignorée, ligne
