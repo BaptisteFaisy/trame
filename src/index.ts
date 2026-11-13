@@ -27,7 +27,7 @@ import { registerScreens } from './handlers/resolver';
 import { ACTION_KEYS, runAction } from './handlers/dispatch';
 import { onJiraEvent } from './handlers/events';
 import { onScheduledTick } from './handlers/scheduled';
-import { onRecomputeMessage } from './handlers/consumer';
+import { messageOf, onRecomputeMessage } from './handlers/consumer';
 import { handleCiResults } from './handlers/ingest';
 import type { CiWebRequest, CiWebResponse } from './handlers/ingest';
 import { createValidator } from './handlers/validator';
@@ -133,7 +133,7 @@ export async function onScheduled(payload: Record<string, unknown>): Promise<voi
 }
 
 export async function onMessage(payload: Record<string, unknown>): Promise<void> {
-  await onRecomputeMessage(payload as unknown as RecomputeMessage, deps);
+  await onRecomputeMessage(messageOf(payload), deps);
 }
 
 /* --------------------------------------------- optional closing gate (TR-30) */

@@ -9,7 +9,7 @@
 import { describe, expect, it } from 'vitest';
 import { onJiraEvent } from '../../src/handlers/events.js';
 import { onScheduledTick, parseScope, recomputeScope } from '../../src/handlers/scheduled.js';
-import { onRecomputeMessage } from '../../src/handlers/consumer.js';
+import { messageOf, onRecomputeMessage } from '../../src/handlers/consumer.js';
 import { handleCiResults, parsePayload, toVerifications } from '../../src/handlers/ingest.js';
 import { createValidator } from '../../src/handlers/validator.js';
 import { jqlDangling, jqlHoles, jqlPerforated, jqlUncovered } from '../../src/handlers/jql.js';
@@ -228,6 +228,31 @@ describe('la porte de clôture (TR-30)', () => {
     expect( verdict.valid).toBe(true);
     expect(verdict.blocking).toBe(false);
     expect(verdict.holes).toBeGreaterThan(0);
+  });
+});
+
+describe('le consumer', () => {
+  it('lit le message que Forge enveloppe dans body', () => {
+    const message = { scope: 'PROJ', scopeType: 'project', mode: 'measures' };
+    expect(messageOf({ body: message })).toEqual(message);
+  });
+
+  it('lit aussi un message nu (tests, relance manuelle)', () => {
+    const message = { scope: 'PROJ', scopeType: 'project', mode: 'criteria' };
+    expect(messageOf(message)).toEqual(message);
+  });
+
+  it('recalcule le périmètre quand il reçoit une tranche de mesures', async () => {
+    const deps = makeDeps();
+    (deps.jira as FakeJira).withIssues(ISSUE);
+    await onJiraEvent({ issueKey: 'TRAME-1' }, deps);
+    await onRecomputeMessage(
+      messageOf({ body: { scope: 'TRAME-1', scopeType: 'ticket', mode: 'measures' } }),
+      deps,
+    );
+    const log = deps.log as FakeLogger;
+    expect(log.has('mode inconnu')).toBe(false);
+    expect(log.has('consumer : tranche traitée')).toBe(true);
   });
 });
 
