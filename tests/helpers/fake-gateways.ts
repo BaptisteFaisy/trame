@@ -141,6 +141,15 @@ export class FakeJira implements JiraGateway {
     return found ? { ...found } : null;
   }
 
+  async issueKeysOf(issueIds: readonly string[]): Promise<Map<string, string>> {
+    const map = new Map<string, string>();
+    if (this.denied) return map;
+    for (const issue of this.issues) {
+      if (issueIds.includes(issue.id)) map.set(issue.id, issue.key);
+    }
+    return map;
+  }
+
   async listIssuesSince(_projectId: string, since: string, limit: number): Promise<IssueRef[]> {
     return this.visible(this.issues.filter((issue) => issue.updatedAt >= since)).slice(0, limit);
   }

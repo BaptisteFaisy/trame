@@ -74,6 +74,21 @@ export async function sliceMeasures(
   await recomputeScope(deps, { scopeType: message.scopeType, scope: message.scope });
 }
 
+/**
+ * Le message utile d'une charge utile de consumer.
+ *
+ * Forge enveloppe le corps poussé dans `body` (`{ body: <message> }`) ; les
+ * tests et les rappels passent le message nu. Lire le mauvais niveau donne
+ * `mode inconnu` et un message perdu en silence (incident du 13/11/2026 : le
+ * recalcul ne tournait jamais).
+ */
+export function messageOf(payload: Record<string, unknown>): RecomputeMessage {
+  const body = payload['body'];
+  const source =
+    typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : payload;
+  return source as unknown as RecomputeMessage;
+}
+
 /** Le consumer : une tranche, puis on se remet en file s'il reste du travail. */
 export async function onRecomputeMessage(message: RecomputeMessage, deps: Deps): Promise<void> {
   let more = false;

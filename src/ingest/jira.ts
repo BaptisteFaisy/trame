@@ -171,6 +171,21 @@ export function createJiraGateway(clock: Clock, options: JiraGatewayOptions = {}
         const raw = (await get(route`rest/api/3/issue/${issueIdOrKey}?fields=${fieldsQuery}`)) as RawIssue | null;
         return raw && raw.id ? toIssueRef(raw, now(), fieldId) : null;
       }, null),
+    issueKeysOf: (issueIds) =>
+      safe(warn, `issueKeysOf(${issueIds.length})`, async () => {
+        const map = new Map<string, string>();
+        const ids = issueIds.filter((id) => /^\d+$/.test(id)).slice(0, 100);
+        if (ids.length === 0) return map;
+        const page = (await post(route`rest/api/3/search`, {
+          jql: `id in (${ids.join(',')})`,
+          maxResults: 100,
+          fields: ['key'],
+        })) as { issues?: { id?: string; key?: string }[] } | null;
+        for (const issue of page?.issues ?? []) {
+          if (issue.id && issue.key) map.set(issue.id, issue.key);
+        }
+        return map;
+      }, new Map<string, string>()),
     listIssuesSince: (projectId, since, limit) =>
       safe(warn, 'listIssuesSince', () => listByJql(`project = ${projectId} AND updated >= "${since}" ORDER BY updated ASC`, limit), []),
     listIssuesOfSprint: (projectId, sprint) =>

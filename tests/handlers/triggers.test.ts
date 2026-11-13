@@ -9,7 +9,7 @@
 import { describe, expect, it } from 'vitest';
 import { onJiraEvent } from '../../src/handlers/events.js';
 import { onScheduledTick, parseScope, recomputeScope } from '../../src/handlers/scheduled.js';
-import { onRecomputeMessage } from '../../src/handlers/consumer.js';
+import { messageOf, onRecomputeMessage } from '../../src/handlers/consumer.js';
 import { handleCiResults, parsePayload, toVerifications } from '../../src/handlers/ingest.js';
 import { createValidator } from '../../src/handlers/validator.js';
 import { jqlDangling, jqlHoles, jqlPerforated, jqlUncovered } from '../../src/handlers/jql.js';
@@ -57,6 +57,17 @@ const ISSUE: IssueRef = {
 };
 
 describe('le trigger d’un ticket modifié', () => {
+  it('lit le ticket dans la charge utile de Forge (issue imbriquée)', async () => {
+    // Forme réelle de `avi:jira:updated:issue` : le ticket est sous `issue`.
+    // La forme `issueKey` en tête ne sort que des tests — c'est elle qui
+    // masquait l'incident du 13/11/2026 (rien n'était jamais ingéré).
+    const deps = makeDeps();
+    (deps.jira as FakeJira).withIssues(ISSUE);
+    await onJiraEvent({ issue: { id: '10002', key: 'TRAME-1' } }, deps);
+    const criteria = await deps.store.listCriteria({ scopeType: 'ticket', scope: 'TRAME-1' });
+    expect(criteria.map((criterion) => criterion.criterionKey)).toEqual(['AC-1', 'AC-2', 'AC-3']);
+  });
+
   it('extrait les critères des six origines et les inscrit', async () => {
     const deps = makeDeps();
     (deps.jira as FakeJira).withIssues(ISSUE);
@@ -220,14 +231,48 @@ describe('la porte de clôture (TR-30)', () => {
   });
 });
 
+describe('le consumer', () => {
+  it('lit le message que Forge enveloppe dans body', () => {
+    const message = { scope: 'PROJ', scopeType: 'project', mode: 'measures' };
+    expect(messageOf({ body: message })).toEqual(message);
+  });
+
+  it('lit aussi un message nu (tests, relance manuelle)', () => {
+    const message = { scope: 'PROJ', scopeType: 'project', mode: 'criteria' };
+    expect(messageOf(message)).toEqual(message);
+  });
+
+  it('recalcule le périmètre quand il reçoit une tranche de mesures', async () => {
+    const deps = makeDeps();
+    (deps.jira as FakeJira).withIssues(ISSUE);
+    await onJiraEvent({ issueKey: 'TRAME-1' }, deps);
+    await onRecomputeMessage(
+      messageOf({ body: { scope: 'TRAME-1', scopeType: 'ticket', mode: 'measures' } }),
+      deps,
+    );
+    const log = deps.log as FakeLogger;
+    expect(log.has('mode inconnu')).toBe(false);
+    expect(log.has('consumer : tranche traitée')).toBe(true);
+  });
+});
+
 describe('les fonctions JQL', () => {
   it('trouvent le ticket qui a un trou, et lui seul', async () => {
     const deps = makeDeps();
     (deps.jira as FakeJira).withIssues(ISSUE);
     await onJiraEvent({ issueKey: 'TRAME-1' }, deps);
-    expect(await jqlHoles(deps, ['TRAME-1'])).toEqual(['TRAME-1']);
-    expect(await jqlUncovered(deps, ['TRAME-1'])).toEqual(['TRAME-1']);
-    expect(await jqlPerforated(deps, ['TRAME-1'])).toEqual([]);
-    expect(await jqlDangling(deps, ['TRAME-1'])).toEqual([]);
+    // Jira donne à une fonction JQL l'IDENTIFIANT du ticket ; les registres
+    // sont indexés sur la CLÉ. La fonction rend l'identifiant qu'elle a reçu.
+    expect(await jqlHoles(deps, ['10001'])).toEqual(['10001']);
+    expect(await jqlUncovered(deps, ['10001'])).toEqual(['10001']);
+    expect(await jqlPerforated(deps, ['10001'])).toEqual([]);
+    expect(await jqlDangling(deps, ['10001'])).toEqual([]);
+  });
+
+  it('ne voit rien quand la clé ne correspond à aucun ticket', async () => {
+    const deps = makeDeps();
+    (deps.jira as FakeJira).withIssues(ISSUE);
+    await onJiraEvent({ issueKey: 'TRAME-1' }, deps);
+    expect(await jqlHoles(deps, ['99999'])).toEqual([]);
   });
 });

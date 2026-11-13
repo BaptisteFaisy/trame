@@ -21,7 +21,6 @@
  * Rules: files < 500 lines, functions < 50 lines.
  */
 import type { DdlMigration, DdlRunner } from './sql-client';
-import { forgeDdlRunner } from './sql-client';
 
 /** The fifteen tables of §19, in dependency order. */
 export const TABLES = [
@@ -38,7 +37,7 @@ export const TABLES = [
   'metric_rule',
   'witness',
   'coverage_event',
-  'cursor',
+  'scan_cursor',
   'budget',
 ] as const;
 
@@ -220,14 +219,16 @@ const DDL: Record<TableName, string> = {
     payload_json TEXT,
     KEY idx_event_scope (scope, at)
   )`,
-  cursor: `CREATE TABLE IF NOT EXISTS cursor (
+  // `cursor` est un MOT RÉSERVÉ MySQL : la migration échouait en silence et
+  // aucune table n'était créée (incident du 13/11/2026, journal de dev).
+  scan_cursor: `CREATE TABLE IF NOT EXISTS scan_cursor (
     id VARCHAR(192) NOT NULL PRIMARY KEY,
     scope VARCHAR(128) NOT NULL,
     mode VARCHAR(24) NOT NULL,
     last_issue_id VARCHAR(64),
     last_modified_at TIMESTAMP NULL,
     run_at TIMESTAMP NOT NULL,
-    UNIQUE KEY uq_cursor (scope, mode)
+    UNIQUE KEY uq_scan_cursor (scope, mode)
   )`,
   budget: `CREATE TABLE IF NOT EXISTS budget (
     id VARCHAR(32) NOT NULL PRIMARY KEY,
@@ -244,8 +245,13 @@ export function migrations(): DdlMigration[] {
   return TABLES.map((table) => ({ name: `trame-${table}`, ddl: DDL[table] }));
 }
 
-/** Applies the schema; Forge's `migrationRunner` in production, a stub in tests. */
-export async function ensureSchema(runner: DdlRunner = forgeDdlRunner): Promise<string[]> {
+/**
+ * Applies the schema. The runner is GIVEN, never imported from `sql-client`:
+ * the client needs this module's `migrations()`, so a default here would make
+ * the two files import each other. Forge's `migrationRunner` in production, a
+ * stub in tests.
+ */
+export async function ensureSchema(runner: DdlRunner): Promise<string[]> {
   return runner.run(migrations());
 }
 

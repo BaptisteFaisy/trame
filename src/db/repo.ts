@@ -338,14 +338,14 @@ function createMeasureStore(sql: SqlClient): StorePart {
       events.select(eq('scope', scope), { orderBy: 'at DESC', limit }),
     getCursor: async (scope: string, mode: Cursor['mode']) => {
       const rows = await sql.query<Row>(
-        `SELECT ${CURSOR_COLUMNS.join(', ')} FROM cursor WHERE scope = ? AND mode = ? LIMIT 1`,
+        `SELECT ${CURSOR_COLUMNS.join(', ')} FROM scan_cursor WHERE scope = ? AND mode = ? LIMIT 1`,
         [scope, mode],
       );
       return rows[0] ? rowToCursor(rows[0]) : null;
     },
     putCursor: async (cursor: Cursor) => {
       await sql.execute(
-        upsertStatement('cursor', CURSOR_COLUMNS),
+        upsertStatement('scan_cursor', CURSOR_COLUMNS),
         valuesOf(cursorToRow(cursor), CURSOR_COLUMNS),
       );
     },
