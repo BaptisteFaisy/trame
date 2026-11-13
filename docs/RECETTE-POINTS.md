@@ -4,7 +4,7 @@
 > la commande exacte, le résultat mesuré, le code visé et la limite honnête.
 > Mesuré le 13 novembre 2026 sur `main` @
 > `7c468f7bdb33d9d731b71551e2d30a8e7174e657` : `npx vitest run` donne **49
-> fichiers, 428 tests verts** (≈7 s à chaud).
+> fichiers, 455 tests verts** (≈7 s à chaud).
 
 ## Comment lire une fiche
 

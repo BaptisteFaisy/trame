@@ -23,13 +23,13 @@ cannot be shown as if they existed are named in §0.2, and they never are.
 
 | Surface | State on 13 November 2026 | Where to film it |
 |---|---|---|
-| Test suite | `npx vitest run` → **49 files, 428 tests**, all green (≈8 s warm) | terminal |
+| Test suite | `npx vitest run` → **53 files, 455 tests**, all green (≈8 s warm) | terminal |
 | The eleven screens of §17 | **real server-side**: one view-model each (`src/viewmodel/*.ts`) and one resolver handler (`src/handlers/*.ts`, registered in `src/handlers/resolver.ts`) — `weave-map`, `criterion-detail`, `holes`, `perforations`, `dangling`, `bulletin`, `certificate`, `validation-queue`, `zone-risks`, `visibility`, `timeline` | the public site panels (§2), `tests/handlers/screens.test.ts` |
 | The fourteen MCP tools + four internal actions | **real** (`src/actions/*.ts`, dispatch in `src/handlers/dispatch.ts` ; `tests/contract/entry-points.test.ts` → 5 green) | Rovo, the dispatcher, or the terminal |
 | Trigger, consumer, webtrigger, four JQL functions, closure validator | **real** (`src/handlers/{events,consumer,scheduled,jql,validator}.ts` ; `tests/handlers/triggers.test.ts` → 14 green) | Jira issue navigator (the four functions), the validator message |
-| The Forge app | **deployed**: `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51`, version **2.1.0**, environment `development`, installed on **`one-atlas-cndz.atlassian.net`** (Jira **and** Confluence, page « weave-certificates ») | that tenant, in a browser |
+| The Forge app | **deployed in production**: `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51`, version **2.1.0`, installed on **`one-atlas-cndz.atlassian.net`** (Jira **and** Confluence, page « weave-certificates »). The UI Kit 2 screens are really mounted (one resource per module) — capture `docs/captures/06-app-jira-production.png` | that tenant, in a browser |
 | The public demo site | **online on `main`**: <https://tradoooo.github.io/trame/> — deploys from `main`, **not** from a branch. The page executes the real engine (`site/src/demo/engine.ts` → `computeCoverage`, `detectPerforations`, `detectDangling`, `findHoles`, `buildBulletin`). 12 tests: `tests/site/demo-numbers.test.ts` (6) + `tests/site/demo-render.test.tsx` (6) | the URL itself |
-| Stills ready to cut | `docs/captures/01-site-entier.png` … `05-architecture.png`, shot on 13 November from that URL — see `docs/CAPTURES.md` for what each one contains and how to retake it | timeline |
+| Stills ready to cut | `docs/captures/01-site-entier.png` … `05-architecture.png` (public site) and `06-app-jira-production.png` (the app in Jira, production), shot on 13 November — see `docs/CAPTURES.md` for what each one contains and how to retake it | timeline |
 
 ### 0.2 What does not exist — never stage it
 
@@ -58,7 +58,7 @@ cannot be shown as if they existed are named in §0.2, and they never are.
 ```sh
 npx vitest run tests/site/demo-numbers.test.ts tests/site/demo-render.test.tsx   # 12 verts
 npx vitest run tests/handlers/screens.test.ts tests/contract/entry-points.test.ts # 3 + 5 verts
-npx vitest run                                                                     # 49 fichiers, 428 tests
+npx vitest run                                                                     # 53 fichiers, 455 tests
 curl -sI -o /dev/null -w '%{http_code}\n' https://tradoooo.github.io/trame/       # 200
 ```
 
@@ -73,8 +73,8 @@ say on the caption that the tenant is empty — never fake a result.
 
 That draft was written on `main` @ a commit since superseded, and it described a
 product the repository no longer was. Corrections, all dated
-13 November 2026: the base commit is now `7c468f7`; the suite reads 49 files and
-428 tests; the eleven screens and the fourteen tools are **no longer placeholders
+13 November 2026: the base commit is now `fd07d10`; the suite reads 53 files and
+455 tests; the eleven screens and the fourteen tools are **no longer placeholders
 that answer an "unimplemented" marker** — they answer data through the resolver;
 the public site is **merged on `main` and online**, so no branch checkout is
 needed to film it; the app is deployed and installed, so the Jira and Confluence

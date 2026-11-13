@@ -2,7 +2,7 @@
 
 Ces images ne sont pas des maquettes : ce sont des captures d'écran du **site public**
 <https://tradoooo.github.io/trame/>, prises le **2026-11-13** sur `main` @
-**`7c468f7`** (428 tests verts).
+**`fd07d10`** (455 tests verts).
 
 ## Ce que ces captures sont — et ne sont pas
 
@@ -13,12 +13,11 @@ déclarés, 1 provisoire — sont calculés à l'affichage par ces modules, pas 
 Ils tombent juste : 24 = les 6 tickets du projet semé (`DEMO_TICKETS`, `src/sample/demo-project.ts`)
 × 4 critères.
 
-**Ce qu'elles ne sont pas.** Ce ne sont **pas** des captures des écrans Forge rendus dans
-Jira. L'entrée UI Kit 2 n'est pas branchée : `@forge/react` v10 n'expose pas `render`, donc
-l'écran Jira n'est pas rendable hors instance. Les illustrations « les onze écrans » de la
-section `#screens` sont, comme le dit le site lui-même, dessinées à la main dans la page —
-aucune capture d'interface Forge n'existe ici. Toute image de ce dossier qui laisserait
-croire à un écran Jira serait un faux : il n'y en a pas.
+**Ce qu'elles ne sont pas.** Les captures `01` à `05` sont celles du **site public**, pas
+des écrans Forge rendus dans Jira : les illustrations « les onze écrans » de la section
+`#screens` sont, comme le dit le site lui-même, dessinées à la main dans la page.
+La seule capture d'interface Forge est `06-app-jira-production.png` : l'app Trame dans
+Jira, en production.
 
 ## Les fichiers
 
@@ -34,6 +33,7 @@ sans prise de focus, largeur 1440 px.
 | `03-ecrans.png` | 226 390 o (1440×2200) | 7 762 → 9 962 | « The eleven screens » : les cartes 1 à 9 lisibles (weave map, criterion sheet, hole explorer, perforation register, loose threads, weave bulletin, certificate, validation queue, risk zones) et le début de la 10. |
 | `04-trame.png` | 227 764 o (1440×2200) | 1 269 → 3 469 | « The metaphor » : le schéma de tissage dessiné (AC-1 à AC-4 × `testShouldWeave`, `testShouldCountHoles`, `testShouldShowZone`), la légende fil de chaîne / passage de trame / maille / trou / perforation / fil détendu, puis le haut de la démo. |
 | `05-architecture.png` | 297 534 o (1440×2129) | 10 303 → 12 432 (fin de page) | « The architecture in ten lines » (les 10 points), les quatre chemins de liaison, les documents du dépôt, puis `#recipe` et le pied de page. |
+| `06-app-jira-production.png` | 117 833 o (1500×1300) | page entière | **L'app Trame dans Jira, en production** (pas le site public) : le titre, le sélecteur de périmètre (« Scope », « Scope type », rôles Ticket / Sprint / Project / Version) et le bouton « Load » désactivé quand le périmètre est vide. Source : `one-atlas-cndz.atlassian.net`, app installée en production ; Chrome headless, profil isolé. |
 
 Les sections ne font pas toutes 2200 px de haut : `#weave` (1132 px), `#screens` (1659 px) et
 `#architecture` (1186 px) tiennent dans la fenêtre, donc la fin de chaque image montre le
