@@ -21,7 +21,6 @@
  * Rules: files < 500 lines, functions < 50 lines.
  */
 import type { DdlMigration, DdlRunner } from './sql-client';
-import { forgeDdlRunner } from './sql-client';
 
 /** The fifteen tables of §19, in dependency order. */
 export const TABLES = [
@@ -244,8 +243,13 @@ export function migrations(): DdlMigration[] {
   return TABLES.map((table) => ({ name: `trame-${table}`, ddl: DDL[table] }));
 }
 
-/** Applies the schema; Forge's `migrationRunner` in production, a stub in tests. */
-export async function ensureSchema(runner: DdlRunner = forgeDdlRunner): Promise<string[]> {
+/**
+ * Applies the schema. The runner is GIVEN, never imported from `sql-client`:
+ * the client needs this module's `migrations()`, so a default here would make
+ * the two files import each other. Forge's `migrationRunner` in production, a
+ * stub in tests.
+ */
+export async function ensureSchema(runner: DdlRunner): Promise<string[]> {
   return runner.run(migrations());
 }
 
