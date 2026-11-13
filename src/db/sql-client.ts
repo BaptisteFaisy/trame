@@ -66,6 +66,8 @@ interface ForgeSqlModule {
   migrationRunner?: ForgeMigrationRunner;
 }
 
+import { ensureSchema } from './schema';
+
 let loaded: Promise<ForgeSqlModule> | null = null;
 
 /**
@@ -102,15 +104,29 @@ async function requireSql(): Promise<ForgeSqlApi> {
   return sql;
 }
 
-/** The production `SqlClient`: `sql.prepare(q).bindParams(...).execute()`. */
+/**
+ * The production `SqlClient`: `sql.prepare(q).bindParams(...).execute()`.
+ *
+ * The schema is applied once, before the first statement, and the promise is
+ * memoised so warm runtimes do not re-run the DDL on every invocation. Without
+ * this, every write dies with `ER_NO_SUCH_TABLE` (incident du 13/11/2026 :
+ * `ensureSchema()` n'était appelé nulle part, et l'app ne stockait rien).
+ */
 export function createForgeSqlClient(): SqlClient {
+  let schema: Promise<string[]> | null = null;
+  const ready = (): Promise<string[]> => {
+    schema ??= ensureSchema(forgeDdlRunner);
+    return schema;
+  };
   return {
     async query<Row>(statement: string, params: readonly SqlParam[] = []): Promise<Row[]> {
+      await ready();
       const sql = await requireSql();
       const result = await sql.prepare(statement).bindParams(...params).execute();
       return toRows<Row>(result.rows);
     },
     async execute(statement: string, params: readonly SqlParam[] = []): Promise<number> {
+      await ready();
       const sql = await requireSql();
       const result = await sql.prepare(statement).bindParams(...params).execute();
       return affectedRowsOf(result.rows);
