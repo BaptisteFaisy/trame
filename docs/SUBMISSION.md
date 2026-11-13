@@ -196,7 +196,6 @@ Bilan mesuré le 13 novembre 2026 : **49 fichiers de test, 428 tests, tout vert*
 | Génération LLM : reformulation d'un critère, brouillon de test | `src/ingest/llm.ts` | `notImplemented` explicite ; cache par empreinte et budget réels |
 | Vidéo de démonstration | `docs/VIDEO-SCRIPT.md` | plan minuté prêt ; **la vidéo n'est pas tournée** |
 | Publication Marketplace | app Forge `v2.1.0` en `development` | installée en dev, pas soumise à la Marketplace ; l'entrée UI Kit 2 ne monte pas encore les écrans |
-| Rafraîchissement des états de recette et du guide du jury | `docs/RECETTE.md`, `docs/JUDGES.md` | rédigés sur la base `b3f8cce` ; ils annoncent encore des souches d'écrans et d'outils, corrigées depuis L8/L9b |
 
 ## 5. Les liens
 
@@ -205,8 +204,8 @@ Bilan mesuré le 13 novembre 2026 : **49 fichiers de test, 428 tests, tout vert*
 | Dépôt | https://github.com/Tradoooo/trame | public ; base `origin/main` @ `7c468f7` |
 | Démonstration publique | https://tradoooo.github.io/trame/ | **en ligne** ; la page exécute le vrai moteur (`site/`, mesuré par `tests/site/`, 12 tests) |
 | App Forge déployée | `one-atlas-cndz.atlassian.net` (Jira + Confluence) | déployée en `development`, `v2.1.0`, ARI `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51` |
-| Recette | [`docs/RECETTE.md`](RECETTE.md) | vingt points, commandes exactes ; états mesurés au 12/11 sur `b3f8cce`, à rafraîchir depuis L8/L9b |
-| Instructions aux jugés | [`docs/JUDGES.md`](JUDGES.md) | en dépôt, base `b3f8cce` |
+| Recette | [`docs/RECETTE.md`](RECETTE.md), [`docs/RECETTE-POINTS.md`](RECETTE-POINTS.md) | vingt points, commandes exactes ; états mesurés le 13/11/2026 sur `7c468f7` |
+| Instructions aux jugés | [`docs/JUDGES.md`](JUDGES.md) | en dépôt, base `7c468f7` |
 | Scénario de la vidéo | [`docs/VIDEO-SCRIPT.md`](VIDEO-SCRIPT.md) | plan minuté prêt ; **la vidéo n'est pas tournée** |
 | Conflits et agent hermes | [`docs/CONFLICTS.md`](CONFLICTS.md) | en dépôt, preuves PR #19 et #21 |
 | Spécification | [`docs/CAHIER-DES-CHARGES.md`](CAHIER-DES-CHARGES.md) | en dépôt |
@@ -218,10 +217,10 @@ Bilan mesuré le 13 novembre 2026 : **49 fichiers de test, 428 tests, tout vert*
 |---|---|---|---|
 | 1 | nom public, slogan, catégorie | §1 de cette fiche | fait |
 | 2 | README : l'idée, le vocabulaire, ce que l'app ne fait pas, l'état du chantier | `README.md` | fait |
-| 3 | recette des vingt points, avec la commande exacte et l'état réel | `docs/RECETTE.md` | en dépôt ; les 20 points ont un test, mais les états affichés datent de `b3f8cce` — **à rafraîchir** |
+| 3 | recette des vingt points, avec la commande exacte et l'état réel | `docs/RECETTE.md`, `docs/RECETTE-POINTS.md` | **fait** : 20/20 points mesurés le 13/11/2026 sur `7c468f7` |
 | 4 | jeu de données de démonstration | `src/sample/demo-project.ts` (§26, testé) | fait |
 | 5 | scénario de la vidéo minuté et liste des captures | `docs/VIDEO-SCRIPT.md` | fait (plan) ; **la vidéo reste à tourner** |
-| 6 | instructions aux jugés, y compris l'installation en cinq minutes | `docs/JUDGES.md` | en dépôt ; base `b3f8cce`, **à rafraîchir** |
+| 6 | instructions aux jugés, y compris l'installation en cinq minutes | `docs/JUDGES.md` | **fait** : base `7c468f7`, 428 tests, app déployée |
 | 7 | application déployée sur un site de développement | `one-atlas-cndz.atlassian.net`, `v2.1.0` dev | **fait** (déployée et installée) ; la démo reste partielle : l'entrée UI Kit 2 liste les écrans au lieu de les monter |
 | 8 | liens de démonstration et de vidéo publiés dans la fiche de soumission | §5 | démonstration **fait** (site public en ligne) ; vidéo **à faire** |
 | 9 | bonus Teamwork Graph, Agents Rovo, MCP, Marketplace cochés, avec la preuve dans le dépôt | §2 | fait : permissions et rectification TWG, agent `le-fil`, prompt, skill, 14 outils + 4 actions internes avec leurs corps et leurs tests, manifeste de 18 types de modules |

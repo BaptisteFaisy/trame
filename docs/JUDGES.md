@@ -147,9 +147,11 @@ autres ont perdu leur seule vérification quand leur test a été désactivé.
 ### 4.4 Les moteurs de calcul — écrits, mergés, testés
 
 Toute la couche de domaine est sur `origin/main` et testée. Les vingt points
-de la recette du §24 : voir [`docs/RECETTE.md`](RECETTE.md). En résumé, 17 des 20
-points ont leur test nominatif et il passe ; 3 points (§24.1, §24.18, §24.19)
-n'ont pas encore de test nominatif.
+de la recette du §24 : voir [`docs/RECETTE.md`](RECETTE.md) et le détail point
+par point dans [`docs/RECETTE-POINTS.md`](RECETTE-POINTS.md). **Les vingt points
+ont leur test nominatif et il passe** — 129 tests portent un numéro `§24.N`,
+et chacun des vingt a été relancé seul le 13 novembre 2026 sur `main` @
+`7c468f7`.
 
 Quelques comptages mesurés, fichier par fichier :
 
@@ -165,6 +167,8 @@ npx vitest run tests/sample/demo-project.test.ts   # 10 tests
 
 - **[docs/RECETTE.md](RECETTE.md)** — les vingt points du §24, un par un : ce que
   le point vérifie, la **commande exacte**, le fichier de test, et l'état réel ;
+- **[docs/RECETTE-POINTS.md](RECETTE-POINTS.md)** — la fiche détaillée de chaque
+  point : commande, sortie, code visé, limite ;
 - **[docs/VIDEO-SCRIPT.md](VIDEO-SCRIPT.md)** — le scénario de la vidéo, minuté,
   et les captures à tourner ;
 - **[docs/SUBMISSION.md](SUBMISSION.md)** — la fiche de soumission ;
