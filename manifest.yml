@@ -30,7 +30,7 @@ modules:
   jira:issuePanel:
     - key: criterion-panel
       title: Criteria
-      resource: main
+      resource: panel
       resolver:
         function: resolver
       render: native
@@ -63,7 +63,7 @@ modules:
   jira:globalPage:
     - key: trame-page
       title: Trame
-      resource: main
+      resource: page
       resolver:
         function: resolver
       render: native
@@ -72,7 +72,7 @@ modules:
   jira:projectPage:
     - key: trame-project-page
       title: Trame
-      resource: main
+      resource: project
       resolver:
         function: resolver
       render: native
@@ -83,7 +83,7 @@ modules:
       title: Weave bulletin
       description: Coverage of the acceptance criteria of the version, in one glance.
       thumbnail: static/icon.svg
-      resource: main
+      resource: gadget
       resolver:
         function: resolver
       render: native
@@ -131,12 +131,11 @@ modules:
     - key: certificates-page
       title: Weave certificates
       route: weave-certificates
-      resource: main
+      resource: certificates
       resolver:
         function: resolver
       render: native
-  # Pas de `confluence:macro` : ce module n'existe pas dans la CLI 14.2 (il
-  # faudrait une interface Custom UI en dossier). Le bulletin se lit dans Jira.
+  # Pas de `confluence:macro` : ce module n'existe pas dans la CLI 14.2.
   # Pont signé depuis les pipelines : la source de la force « machine » (§7).
   webtrigger:
     - key: ci-results
@@ -454,10 +453,18 @@ modules:
       name: Trame
       tools: [get-coverage, list-holes, list-perforations, list-dangling, get-criterion, propose-test, propose-reformulation, confirm-link, reject-link, get-bulletin, get-certificate, list-unverifiable, get-zones-risk, get-coverage-timeline]
 resources:
-  # Entrée UI Kit : les onze écrans (§17) sont réels côté resolver ; cette
-  # ressource rend le registre (`@forge/react` v10 n'expose pas `render`).
-  - key: main
-    path: src/ui/frontend/index.tsx
+  # Les cinq entrées UI Kit 2 : un `resource` par module (montage par l'export
+  # PAR DÉFAUT de `@forge/react`, `ForgeReconciler.render`).
+  - key: panel
+    path: src/ui/frontend/panel.tsx
+  - key: page
+    path: src/ui/frontend/page.tsx
+  - key: project
+    path: src/ui/frontend/project.tsx
+  - key: gadget
+    path: src/ui/frontend/gadget.tsx
+  - key: certificates
+    path: src/ui/frontend/certificates.tsx
   # Prompt système de l'agent Rovo, icône des modules.
   - key: agent-prompt
     path: static/agent
