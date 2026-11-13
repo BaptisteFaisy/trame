@@ -33,8 +33,14 @@ async function readStates(
 ): Promise<Map<string, TicketState>> {
   const now = deps.clock.now();
   const states = new Map<string, TicketState>();
+  // Jira donne à une fonction JQL les IDENTIFIANTS des tickets ; la base, elle,
+  // indexe un périmètre « ticket » sur la CLÉ (src/db/repo.ts, `scopeWhere`).
+  // Sans cette correspondance, la fonction ne verrait jamais rien.
+  const keys = await deps.jira.issueKeysOf(issueIds);
   for (const issueId of issueIds.slice(0, JQL_LIMIT)) {
-    const scope = { scopeType: 'ticket' as const, scope: issueId };
+    const ticketKey = keys.get(issueId);
+    if (!ticketKey) continue;
+    const scope = { scopeType: 'ticket' as const, scope: ticketKey };
     const criteria = await deps.store.listCriteria(scope);
     if (criteria.length === 0) continue;
     const links = (await Promise.all(criteria.map((criterion) => deps.store.listLinks(criterion.id)))).flat();
