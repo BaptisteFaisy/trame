@@ -152,11 +152,36 @@ export async function refreshPerforations(
   return perforations.length;
 }
 
+/**
+ * Le ticket que le trigger désigne, quelle que soit la forme du payload.
+ *
+ * Forge (`avi:jira:updated:issue`) place le ticket sous `issue` :
+ * `{ issue: { id, key, … }, timestamp, actor }`. Les charges utiles construites
+ * à la main (tests, rappels) portent `issueKey` ou `issueId` en tête. Les deux
+ * formes sont lues : un test qui passe sur une forme que la plateforme
+ * n'envoie jamais ne prouve rien (incident du 13/11/2026, en production :
+ * « trigger jira:updated:issue sans ticket »).
+ */
+export function ticketKeyOf(payload: Record<string, unknown>): string {
+  const issue = payload['issue'];
+  const nested =
+    typeof issue === 'object' && issue !== null ? (issue as Record<string, unknown>) : {};
+  return String(
+    payload['issueKey'] ??
+      payload['issueId'] ??
+      nested['key'] ??
+      nested['id'] ??
+      '',
+  );
+}
+
 /** Le trigger : un ticket modifié. */
 export async function onJiraEvent(payload: Record<string, unknown>, deps: Deps): Promise<void> {
-  const key = String(payload['issueKey'] ?? payload['issueId'] ?? '');
+  const key = ticketKeyOf(payload);
   if (!key) {
-    deps.log.log('warn', 'trigger jira:updated:issue sans ticket');
+    deps.log.log('warn', 'trigger jira:updated:issue sans ticket', {
+      receivedKeys: Object.keys(payload).slice(0, 12).join(','),
+    });
     return;
   }
   const issue = await deps.jira.getIssue(key);
