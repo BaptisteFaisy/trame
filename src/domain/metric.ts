@@ -28,8 +28,8 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { CriterionKind, MetricRule, PriorityTerm, ZoneRisk } from '../types.js';
-import { KIND_WEIGHTS, RECURRENCE_WEIGHT, ZONE_RISK_WEIGHT } from '../defaults.js';
+import type { CriterionKind, MetricRule, PriorityTerm, ZoneRisk } from '../types';
+import { KIND_WEIGHTS, RECURRENCE_WEIGHT, ZONE_RISK_WEIGHT } from '../defaults';
 
 /* ------------------------------------------------------------------ entrée */
 

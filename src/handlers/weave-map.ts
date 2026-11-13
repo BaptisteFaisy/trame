@@ -7,13 +7,13 @@
  *
  * Rules: files < 500 lines, functions < 50 lines.
  */
-import type { Deps } from '../ports.js';
-import type { ScopeRef } from '../types.js';
-import { detectDangling } from '../domain/dangling.js';
-import { detectPerforations } from '../domain/perforations.js';
-import { findHoles } from '../domain/holes.js';
-import { buildWeaveMap } from '../viewmodel/weave-map.js';
-import { pickLang } from '../i18n/index.js';
+import type { Deps } from '../ports';
+import type { ScopeRef } from '../types';
+import { detectDangling } from '../domain/dangling';
+import { detectPerforations } from '../domain/perforations';
+import { findHoles } from '../domain/holes';
+import { buildWeaveMap } from '../viewmodel/weave-map';
+import { pickLang } from '../i18n/index';
 
 /** Reads a scope from the payload; no scope means nothing to weave. */
 function scopeOf(_deps: Deps, payload: Record<string, unknown>): ScopeRef | null {

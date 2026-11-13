@@ -21,16 +21,16 @@
  * Module pur : jamais d'import `@forge/*` (docs/CONTRACTS.md §3).
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { CriterionOrigin } from '../types.js';
-import type { CollectInput, ExtractedCriterion, SecretSignal } from './types.js';
-import { fingerprint } from './fingerprint.js';
-import { materialsOf, secretFlagOf } from './normalize.js';
-import { extract as extractField } from './field.js';
-import { extract as extractDescription } from './description.js';
-import { extract as extractTable } from './table.js';
-import { extract as extractConfluence } from './confluence.js';
-import { extract as extractTestTicket } from './test-ticket.js';
-import { extract as extractAttachment } from './attachment.js';
+import type { CriterionOrigin } from '../types';
+import type { CollectInput, ExtractedCriterion, SecretSignal } from './types';
+import { fingerprint } from './fingerprint';
+import { materialsOf, secretFlagOf } from './normalize';
+import { extract as extractField } from './field';
+import { extract as extractDescription } from './description';
+import { extract as extractTable } from './table';
+import { extract as extractConfluence } from './confluence';
+import { extract as extractTestTicket } from './test-ticket';
+import { extract as extractAttachment } from './attachment';
 
 /** Un collecteur par gîte du §6 (signature gelée, docs/CONTRACTS.md §3). */
 export const COLLECTORS: Record<CriterionOrigin, (input: CollectInput) => ExtractedCriterion[]> = {
@@ -202,6 +202,6 @@ export function flagSecrets(inputs: CollectInput[]): SecretSignal[] {
   return signals;
 }
 
-export type { CollectInput, ExtractedCriterion, SecretSignal } from './types.js';
-export { fingerprint, sameFingerprint, normalize } from './fingerprint.js';
-export { attachmentReference } from './attachment.js';
+export type { CollectInput, ExtractedCriterion, SecretSignal } from './types';
+export { fingerprint, sameFingerprint, normalize } from './fingerprint';
+export { attachmentReference } from './attachment';

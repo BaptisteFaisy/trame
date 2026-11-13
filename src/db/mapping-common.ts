@@ -11,7 +11,7 @@
  *
  * Rules: files < 500 lines, functions < 50 lines.
  */
-import type { SqlParam } from './sql-client.js';
+import type { SqlParam } from './sql-client';
 
 export type Row = Record<string, unknown>;
 

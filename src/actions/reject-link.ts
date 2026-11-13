@@ -1,6 +1,6 @@
-import type { ActorContext, Deps } from '../ports.js';
-import { decideLink } from './link-decision.js';
-import { readPersonFilter, say } from './common.js';
+import type { ActorContext, Deps } from '../ports';
+import { decideLink } from './link-decision';
+import { readPersonFilter, say } from './common';
 
 /**
  * Liaison refusée : la suggestion suivante du même type s'affaiblit (§9.4).

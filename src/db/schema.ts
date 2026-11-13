@@ -20,8 +20,8 @@
  *
  * Rules: files < 500 lines, functions < 50 lines.
  */
-import type { DdlMigration, DdlRunner } from './sql-client.js';
-import { forgeDdlRunner } from './sql-client.js';
+import type { DdlMigration, DdlRunner } from './sql-client';
+import { forgeDdlRunner } from './sql-client';
 
 /** The fifteen tables of §19, in dependency order. */
 export const TABLES = [

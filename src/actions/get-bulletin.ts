@@ -1,9 +1,9 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { Coverage, Criterion, Hole, Witness } from '../types.js';
-import { buildBulletin } from '../domain/bulletin.js';
-import { findHoles } from '../domain/holes.js';
-import { conclusion, percent } from '../domain/percent.js';
-import { comparableTo, previousWitness } from '../domain/witness.js';
+import type { ActorContext, Deps } from '../ports';
+import type { Coverage, Criterion, Hole, Witness } from '../types';
+import { buildBulletin } from '../domain/bulletin';
+import { findHoles } from '../domain/holes';
+import { conclusion, percent } from '../domain/percent';
+import { comparableTo, previousWitness } from '../domain/witness';
 import {
   coverageOf,
   envelope,
@@ -12,7 +12,7 @@ import {
   messagesOf,
   readPersonFilter,
   readScope,
-} from './common.js';
+} from './common';
 
 /** La comparaison avec le témoin précédent : deux chiffres, même périmètre. */
 interface Comparison {

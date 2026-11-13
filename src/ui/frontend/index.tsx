@@ -8,7 +8,7 @@
  *
  * Rules: files < 500 lines, functions < 50 lines.
  */
-import { SCREEN_KEYS } from '../../handlers/resolver.js';
+import { SCREEN_KEYS } from '../../handlers/resolver';
 
 export interface ScreenEntry {
   key: string;

@@ -10,25 +10,25 @@
  * No tool returns criterion content outside the requested scope, and none
  * accepts a person's name as a filter (§16).
  */
-import type { ActionRun, Deps, ActorContext } from '../ports.js';
-import { run as getCoverage } from '../actions/get-coverage.js';
-import { run as listHoles } from '../actions/list-holes.js';
-import { run as listPerforations } from '../actions/list-perforations.js';
-import { run as listDangling } from '../actions/list-dangling.js';
-import { run as getCriterion } from '../actions/get-criterion.js';
-import { run as proposeTest } from '../actions/propose-test.js';
-import { run as proposeReformulation } from '../actions/propose-reformulation.js';
-import { run as confirmLink } from '../actions/confirm-link.js';
-import { run as rejectLink } from '../actions/reject-link.js';
-import { run as getBulletin } from '../actions/get-bulletin.js';
-import { run as getCertificate } from '../actions/get-certificate.js';
-import { run as listUnverifiable } from '../actions/list-unverifiable.js';
-import { run as getZonesRisk } from '../actions/get-zones-risk.js';
-import { run as getCoverageTimeline } from '../actions/get-coverage-timeline.js';
-import { run as recompute } from '../actions/recompute.js';
-import { run as setMetricRule } from '../actions/set-metric-rule.js';
-import { run as saveWitness } from '../actions/save-witness.js';
-import { run as publishCertificate } from '../actions/publish-certificate.js';
+import type { ActionRun, Deps, ActorContext } from '../ports';
+import { run as getCoverage } from '../actions/get-coverage';
+import { run as listHoles } from '../actions/list-holes';
+import { run as listPerforations } from '../actions/list-perforations';
+import { run as listDangling } from '../actions/list-dangling';
+import { run as getCriterion } from '../actions/get-criterion';
+import { run as proposeTest } from '../actions/propose-test';
+import { run as proposeReformulation } from '../actions/propose-reformulation';
+import { run as confirmLink } from '../actions/confirm-link';
+import { run as rejectLink } from '../actions/reject-link';
+import { run as getBulletin } from '../actions/get-bulletin';
+import { run as getCertificate } from '../actions/get-certificate';
+import { run as listUnverifiable } from '../actions/list-unverifiable';
+import { run as getZonesRisk } from '../actions/get-zones-risk';
+import { run as getCoverageTimeline } from '../actions/get-coverage-timeline';
+import { run as recompute } from '../actions/recompute';
+import { run as setMetricRule } from '../actions/set-metric-rule';
+import { run as saveWitness } from '../actions/save-witness';
+import { run as publishCertificate } from '../actions/publish-certificate';
 
 /** The fourteen tools of §16, exposed by `rovo:mcp` and as Forge actions. */
 export const MCP_TOOL_KEYS = [

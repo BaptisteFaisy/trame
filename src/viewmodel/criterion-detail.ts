@@ -8,9 +8,9 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Lang } from '../i18n/index.js';
-import { label } from '../i18n/index.js';
-import { STRENGTH_RANK } from '../defaults.js';
+import type { Lang } from '../i18n/index';
+import { label } from '../i18n/index';
+import { STRENGTH_RANK } from '../defaults';
 import type {
   Coverage,
   Criterion,
@@ -24,10 +24,10 @@ import type {
   Strength,
   Verification,
   VerificationForm,
-} from '../types.js';
-import { codedState, coverageView, perforationLine } from './common.js';
-import type { CodedState, CoverageView, Figure, PerforationLine } from './common.js';
-import { text } from './labels.js';
+} from '../types';
+import { codedState, coverageView, perforationLine } from './common';
+import type { CodedState, CoverageView, Figure, PerforationLine } from './common';
+import { text } from './labels';
 
 /* ------------------------------------------------------------------ entrée */
 

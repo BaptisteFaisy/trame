@@ -1,6 +1,6 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { Coverage } from '../types.js';
-import { coverageTimeline } from '../domain/timeline.js';
+import type { ActorContext, Deps } from '../ports';
+import type { Coverage } from '../types';
+import { coverageTimeline } from '../domain/timeline';
 import {
   blindSpotsOf,
   envelope,
@@ -8,7 +8,7 @@ import {
   readPersonFilter,
   readScope,
   say,
-} from './common.js';
+} from './common';
 
 /** Une mesure datée de l'historique : les effectifs, jamais un pourcentage seul. */
 function periodLine(coverage: Coverage): Record<string, unknown> {

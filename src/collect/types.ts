@@ -9,8 +9,8 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { CriterionKind, CriterionOrigin } from '../types.js';
-import type { CriterionTable } from '../ports.js';
+import type { CriterionKind, CriterionOrigin } from '../types';
+import type { CriterionTable } from '../ports';
 
 /**
  * Le matériau brut d'une origine, préparé par les adaptateurs (`src/ingest/*`)

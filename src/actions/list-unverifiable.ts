@@ -1,6 +1,6 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { Criterion } from '../types.js';
-import { proposeReformulation } from '../domain/reformulation.js';
+import type { ActorContext, Deps } from '../ports';
+import type { Criterion } from '../types';
+import { proposeReformulation } from '../domain/reformulation';
 import {
   coverageOf,
   envelope,
@@ -9,7 +9,7 @@ import {
   messagesOf,
   readPersonFilter,
   readScope,
-} from './common.js';
+} from './common';
 
 /** Un critère infalsifiable, avec la reformulation proposée (§8.4, §24.10). */
 function line(criterion: Criterion): Record<string, unknown> {

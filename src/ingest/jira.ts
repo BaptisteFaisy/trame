@@ -27,8 +27,8 @@ import type {
   IssueRef,
   JiraGateway,
   Logger,
-} from '../ports.js';
-import { consoleLogger, depsWarning, safe } from './common.js';
+} from '../ports';
+import { consoleLogger, depsWarning, safe } from './common';
 
 /** Transport Jira injectable (défaut : `api.asApp().requestJira`). */
 export type JiraRequest = (url: Route, init?: RequestInit) => Promise<unknown>;

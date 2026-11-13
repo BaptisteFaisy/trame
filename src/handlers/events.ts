@@ -11,14 +11,14 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import type { IssueRef } from '../ports.js';
-import type { Criterion, CriterionOrigin, ScopeRef } from '../types.js';
-import { extractAll, flagSecrets } from '../collect/index.js';
-import type { CollectInput, ExtractedCriterion } from '../collect/types.js';
-import { fingerprint } from '../collect/fingerprint.js';
-import { detectPerforations } from '../domain/perforations.js';
-import { falsifiabilityOf } from '../domain/falsifiability.js';
+import type { Deps } from '../ports';
+import type { IssueRef } from '../ports';
+import type { Criterion, CriterionOrigin, ScopeRef } from '../types';
+import { extractAll, flagSecrets } from '../collect/index';
+import type { CollectInput, ExtractedCriterion } from '../collect/types';
+import { fingerprint } from '../collect/fingerprint';
+import { detectPerforations } from '../domain/perforations';
+import { falsifiabilityOf } from '../domain/falsifiability';
 
 /** Les matériaux des six origines pour un ticket (§6). */
 export function materialsOf(issue: IssueRef): CollectInput[] {

@@ -25,7 +25,7 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import { MIN_CRITERION_LENGTH, UNFALSIFIABLE_MARKERS } from '../defaults.js';
+import { MIN_CRITERION_LENGTH, UNFALSIFIABLE_MARKERS } from '../defaults';
 
 /** Le verdict : falsifiable, ou la raison de ne pas l'être — en français. */
 export interface FalsifiabilityVerdict {

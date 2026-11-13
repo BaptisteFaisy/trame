@@ -15,7 +15,7 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { CollectInput, ExtractedCriterion } from './types.js';
+import type { CollectInput, ExtractedCriterion } from './types';
 
 /**
  * La référence déclarée de la pièce jointe.

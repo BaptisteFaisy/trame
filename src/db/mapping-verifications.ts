@@ -7,8 +7,8 @@
  * A link keeps its rejection and its learned weights, because a refused link
  * must weaken the next suggestion of the same kind (§9.4).
  */
-import type { Link, Verification } from '../types.js';
-import type { Row } from './mapping-common.js';
+import type { Link, Verification } from '../types';
+import type { Row } from './mapping-common';
 import {
   fromSqlTimestamp,
   optionalText,
@@ -17,7 +17,7 @@ import {
   toNumber,
   toJson,
   toSqlTimestamp,
-} from './mapping-common.js';
+} from './mapping-common';
 
 export const VERIFICATION_COLUMNS = [
   'id',

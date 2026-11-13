@@ -13,11 +13,11 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import type { Criterion, Link, Verification } from '../types.js';
-import { learnFrom, sharedTerms, tokenize } from '../domain/confidence.js';
-import { readText, refusal } from './common.js';
-import type { Refusal } from './common.js';
+import type { Deps } from '../ports';
+import type { Criterion, Link, Verification } from '../types';
+import { learnFrom, sharedTerms, tokenize } from '../domain/confidence';
+import { readText, refusal } from './common';
+import type { Refusal } from './common';
 
 /** La décision : confirmer, ou refuser. */
 export type Decision = 'confirm' | 'reject';

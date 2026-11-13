@@ -20,9 +20,9 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps, LlmGateway } from '../ports.js';
-import type { Criterion } from '../types.js';
-import { measureFragment } from './falsifiability.js';
+import type { Deps, LlmGateway } from '../ports';
+import type { Criterion } from '../types';
+import { measureFragment } from './falsifiability';
 
 /** Une reformulation : le texte proposé et la mesure qui le rend tranchable. */
 export interface Reformulation {

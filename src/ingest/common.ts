@@ -16,8 +16,8 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Logger } from '../ports.js';
-import type { AbsenceKind, VisibilityProbe } from '../types.js';
+import type { Logger } from '../ports';
+import type { AbsenceKind, VisibilityProbe } from '../types';
 
 /** Fabrique d'avertissements « deps-style » : `[trame:deps] <adaptateur> …`. */
 export function depsWarning(log: Logger, adapter: string): (message: string, meta?: unknown) => void {

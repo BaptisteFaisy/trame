@@ -13,9 +13,9 @@
  *
  * Rules: files < 500 lines, functions < 50 lines.
  */
-import type { SqlClient, SqlParam } from './sql-client.js';
-import type { Row } from './mapping-common.js';
-import { valuesOf } from './mapping-common.js';
+import type { SqlClient, SqlParam } from './sql-client';
+import type { Row } from './mapping-common';
+import { valuesOf } from './mapping-common';
 
 /** Upper bound of any list read: nothing is ever unbounded. */
 export const LIST_LIMIT = 500;

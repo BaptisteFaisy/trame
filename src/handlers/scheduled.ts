@@ -10,14 +10,14 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import type { ScopeRef } from '../types.js';
-import type { Coverage, ScopeType } from '../types.js';
-import { computeCoverage } from '../domain/coverage.js';
-import { detectDangling } from '../domain/dangling.js';
-import { detectPerforations } from '../domain/perforations.js';
-import { findHoles } from '../domain/holes.js';
-import { saveWitness } from '../domain/witness.js';
+import type { Deps } from '../ports';
+import type { ScopeRef } from '../types';
+import type { Coverage, ScopeType } from '../types';
+import { computeCoverage } from '../domain/coverage';
+import { detectDangling } from '../domain/dangling';
+import { detectPerforations } from '../domain/perforations';
+import { findHoles } from '../domain/holes';
+import { saveWitness } from '../domain/witness';
 
 /** Combien de périmètres le passage nocturne traite. */
 export const NIGHTLY_SCOPE_LIMIT = 50;

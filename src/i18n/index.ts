@@ -5,9 +5,9 @@
  * `EN` is the source of truth for the key set; `FR` is typed against it, so
  * parity is checked by the compiler and by `tests/i18n/dictionary.test.ts`.
  */
-import { EN } from './en.js';
-import type { MessageKey } from './en.js';
-import { FR } from './fr.js';
+import { EN } from './en';
+import type { MessageKey } from './en';
+import { FR } from './fr';
 import type {
   AbsenceKind,
   CriterionKind,
@@ -18,9 +18,9 @@ import type {
   PerforationClass,
   Strength,
   VerificationForm,
-} from '../types.js';
-import { SCREEN_KEYS } from '../handlers/resolver.js';
-import type { ScreenKey } from '../handlers/resolver.js';
+} from '../types';
+import { SCREEN_KEYS } from '../handlers/resolver';
+import type { ScreenKey } from '../handlers/resolver';
 
 export type Lang = 'en' | 'fr';
 

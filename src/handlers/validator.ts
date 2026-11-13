@@ -8,9 +8,9 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import { computeCoverage } from '../domain/coverage.js';
-import { detectPerforations } from '../domain/perforations.js';
+import type { Deps } from '../ports';
+import { computeCoverage } from '../domain/coverage';
+import { detectPerforations } from '../domain/perforations';
 
 /** Ce que Forge passe à un validateur de transition. */
 export interface ValidatorInput {

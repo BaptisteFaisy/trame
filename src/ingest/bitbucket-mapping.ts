@@ -17,9 +17,9 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { BuildRef, PullMention, TestFile } from '../ports.js';
-import { normalizeStatus, statusToken } from './common.js';
-import { criterionRefsInName, ticketKeyInName as ticketKeyOf, ticketKeysIn } from './refs.js';
+import type { BuildRef, PullMention, TestFile } from '../ports';
+import { normalizeStatus, statusToken } from './common';
+import { criterionRefsInName, ticketKeyInName as ticketKeyOf, ticketKeysIn } from './refs';
 
 /** Ce qui est journalisé quand un objet est écarté. */
 export type BitbucketReport = (message: string, meta?: unknown) => void;

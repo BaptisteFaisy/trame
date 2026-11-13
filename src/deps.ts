@@ -22,19 +22,19 @@ import type {
   SecretScanner,
   Settings,
   TrameStore,
-} from './ports.js';
-import type { Deps } from './ports.js';
-import { DEFAULT_SETTINGS } from './defaults.js';
-import type { SqlClient } from './db/sql-client.js';
-import { createForgeSqlClient } from './db/sql-client.js';
-import { createStore } from './db/repo.js';
-import { createJiraGateway } from './ingest/jira.js';
-import { createGraphGateway } from './ingest/graph.js';
-import { createBitbucketGateway } from './ingest/bitbucket.js';
-import { createConfluenceGateway } from './ingest/confluence.js';
-import { createPipelineGateway } from './ingest/pipeline.js';
-import { createLlmGateway } from './ingest/llm.js';
-import { createSecretScanner } from './domain/secrets.js';
+} from './ports';
+import type { Deps } from './ports';
+import { DEFAULT_SETTINGS } from './defaults';
+import type { SqlClient } from './db/sql-client';
+import { createForgeSqlClient } from './db/sql-client';
+import { createStore } from './db/repo';
+import { createJiraGateway } from './ingest/jira';
+import { createGraphGateway } from './ingest/graph';
+import { createBitbucketGateway } from './ingest/bitbucket';
+import { createConfluenceGateway } from './ingest/confluence';
+import { createPipelineGateway } from './ingest/pipeline';
+import { createLlmGateway } from './ingest/llm';
+import { createSecretScanner } from './domain/secrets';
 
 /** Real clock: every timestamp of the app goes through it. */
 export const systemClock: Clock = { now: () => new Date().toISOString() };

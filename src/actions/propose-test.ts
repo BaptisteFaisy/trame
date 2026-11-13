@@ -1,7 +1,7 @@
-import type { ActorContext, Deps } from '../ports.js';
-import { draftTest, enqueueProposal } from '../domain/proposals.js';
-import { readPersonFilter } from './common.js';
-import { loadCriterion, envelope } from './common.js';
+import type { ActorContext, Deps } from '../ports';
+import { draftTest, enqueueProposal } from '../domain/proposals';
+import { readPersonFilter } from './common';
+import { loadCriterion, envelope } from './common';
 
 /**
  * Brouillon de cas de test proposé pour un trou, jamais appliqué (§12.6).

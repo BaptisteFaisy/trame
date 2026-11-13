@@ -4,12 +4,12 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import { scopeFrom, languageFrom } from './screen.js';
-import { buildHoles } from '../viewmodel/holes.js';
-import { computeCoverage } from '../domain/coverage.js';
-import { detectDangling } from '../domain/dangling.js';
-import { detectPerforations } from '../domain/perforations.js';
+import type { Deps } from '../ports';
+import { scopeFrom, languageFrom } from './screen';
+import { buildHoles } from '../viewmodel/holes';
+import { computeCoverage } from '../domain/coverage';
+import { detectDangling } from '../domain/dangling';
+import { detectPerforations } from '../domain/perforations';
 
 export async function render(deps: Deps, payload: Record<string, unknown>): Promise<unknown> {
   const scope = scopeFrom(payload);

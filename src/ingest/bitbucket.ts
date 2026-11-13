@@ -23,10 +23,10 @@
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
 import api, { assumeTrustedRoute } from '@forge/api';
-import type { BitbucketGateway, BuildRef, Logger, PullMention, TestFile } from '../ports.js';
-import type { VisibilityProbe } from '../types.js';
-import { absentProbe, depsWarning, safe } from './common.js';
-import { toBuildRef, toPullMention, toTestFile } from './bitbucket-mapping.js';
+import type { BitbucketGateway, BuildRef, Logger, PullMention, TestFile } from '../ports';
+import type { VisibilityProbe } from '../types';
+import { absentProbe, depsWarning, safe } from './common';
+import { toBuildRef, toPullMention, toTestFile } from './bitbucket-mapping';
 
 /** Détail de repli quand le transport n'est pas disponible. */
 export const BITBUCKET_TRANSPORT_UNAVAILABLE = 'transport Bitbucket indisponible';

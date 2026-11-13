@@ -19,9 +19,9 @@
  *
  * Rules: files < 500 lines, functions < 50 lines.
  */
-import type { Link, LinkKind, LinkPath, Criterion, Verification } from '../types.js';
-import type { DeclaredRelation, SimilarityProposal } from '../ports.js';
-import { DERIVED_LINK_FLOOR, DERIVED_LINK_THRESHOLD } from '../defaults.js';
+import type { Link, LinkKind, LinkPath, Criterion, Verification } from '../types';
+import type { DeclaredRelation, SimilarityProposal } from '../ports';
+import { DERIVED_LINK_FLOOR, DERIVED_LINK_THRESHOLD } from '../defaults';
 
 /** A criterion that nothing can verify never gets a mesh (§8.4). */
 function canBeWoven(criterion: Criterion): boolean {

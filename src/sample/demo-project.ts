@@ -22,7 +22,7 @@ import type {
   Verification,
   VerificationForm,
   ZoneRisk,
-} from '../types.js';
+} from '../types';
 
 export const DEMO_PROJECT = 'TRAME';
 

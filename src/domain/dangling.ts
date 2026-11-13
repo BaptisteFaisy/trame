@@ -31,8 +31,8 @@ import type {
   DanglingReason,
   Link,
   Verification,
-} from '../types.js';
-import { isMesh } from './perforations.js';
+} from '../types';
+import { isMesh } from './perforations';
 
 /** Ce que le jugement a besoin de lire — rien de plus. */
 export interface DanglingInput {

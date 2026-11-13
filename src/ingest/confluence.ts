@@ -14,9 +14,9 @@
  * Signature exigée par src/deps.ts : `createConfluenceGateway(log)`.
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { ConfluenceGateway, Logger } from '../ports.js';
-import type { VisibilityProbe } from '../types.js';
-import { absentProbe, depsWarning } from './common.js';
+import type { ConfluenceGateway, Logger } from '../ports';
+import type { VisibilityProbe } from '../types';
+import { absentProbe, depsWarning } from './common';
 
 /** Détail unique de la sonde Confluence. */
 export const CONFLUENCE_NOT_WIRED = 'connecteur Confluence non câblé';

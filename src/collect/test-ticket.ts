@@ -23,8 +23,8 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import { buildCriterion, cleanText, criterionKey, isTitleLine } from './normalize.js';
-import type { CollectInput, ExtractedCriterion } from './types.js';
+import { buildCriterion, cleanText, criterionKey, isTitleLine } from './normalize';
+import type { CollectInput, ExtractedCriterion } from './types';
 
 /** Les mots d'emballage d'un titre de test : « test », « de », « recette »… */
 const GENERIC_WORDS =

@@ -1,7 +1,7 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { RecomputeMessage } from '../ports.js';
-import { readPersonFilter, readScope, readText, refusal } from './common.js';
-import type { Refusal } from './common.js';
+import type { ActorContext, Deps } from '../ports';
+import type { RecomputeMessage } from '../ports';
+import { readPersonFilter, readScope, readText, refusal } from './common';
+import type { Refusal } from './common';
 
 /** Les quatre modes de recalcul, un par tranche (§18). */
 const MODES: readonly RecomputeMessage['mode'][] = ['criteria', 'verifications', 'links', 'measures'];

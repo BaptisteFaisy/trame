@@ -18,8 +18,8 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import { buildCriterion, criterionKey, isTitleLine, tableColumns } from './normalize.js';
-import type { CollectInput, ExtractedCriterion } from './types.js';
+import { buildCriterion, criterionKey, isTitleLine, tableColumns } from './normalize';
+import type { CollectInput, ExtractedCriterion } from './types';
 
 /** Le nombre de lignes qui documentent une colonne donnée. */
 function caseCount(rows: readonly string[][], column: number): number {

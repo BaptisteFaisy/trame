@@ -23,7 +23,7 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { ZoneRisk } from '../types.js';
+import type { ZoneRisk } from '../types';
 
 /* ------------------------------------------------------------------ entrée */
 

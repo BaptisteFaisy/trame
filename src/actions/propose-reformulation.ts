@@ -1,7 +1,7 @@
-import type { ActorContext, Deps } from '../ports.js';
-import { draftReformulation, enqueueProposal } from '../domain/proposals.js';
-import { falsifiabilityOf } from '../domain/falsifiability.js';
-import { envelope, loadCriterion, readPersonFilter } from './common.js';
+import type { ActorContext, Deps } from '../ports';
+import { draftReformulation, enqueueProposal } from '../domain/proposals';
+import { falsifiabilityOf } from '../domain/falsifiability';
+import { envelope, loadCriterion, readPersonFilter } from './common';
 
 /**
  * Reformulation vérifiable d'un critère infalsifiable (§12.6).

@@ -5,7 +5,7 @@
  * la parité des dictionnaires n'est donc jamais à vérifier à la main.
  * Vocabulaire du §4 — les mots du produit sont le produit.
  */
-import type { MessageKey } from './en.js';
+import type { MessageKey } from './en';
 
 export const FR: Record<MessageKey, string> = {
   'app.name': 'Trame',

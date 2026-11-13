@@ -7,10 +7,10 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
-import type { Criterion, Link, ScopeRef, Verification, CriterionVersion } from '../types.js';
-import type { Lang } from '../i18n/index.js';
-import { pickLang } from '../i18n/index.js';
+import type { Deps } from '../ports';
+import type { Criterion, Link, ScopeRef, Verification, CriterionVersion } from '../types';
+import type { Lang } from '../i18n/index';
+import { pickLang } from '../i18n/index';
 
 /** Une langue demandée par la charge utile, sinon celle de l'app. */
 export function languageFrom(payload: Record<string, unknown>): Lang {

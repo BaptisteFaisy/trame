@@ -9,7 +9,7 @@
 
 app:
   # Provisional id: `forge create` writes the real one, and the lint runs on it.
-  id: ari:cloud:ecosystem::app/3dfebaa0-bb65-471b-be6b-aaee3033ed99
+  id: ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51
   name: Trame
   description: >-
     Trame weaves acceptance criteria and the acts that verify them. It shows the
@@ -81,27 +81,42 @@ modules:
   jira:dashboardGadget:
     - key: bulletin-gadget
       title: Weave bulletin
+      description: Coverage of the acceptance criteria of the version, in one glance.
+      thumbnail: static/icon.svg
       resource: main
       resolver:
         function: resolver
+      render: native
   # Quatre fonctions JQL (§18) : elles lisent les registres, jamais en ligne.
   jira:jqlFunction:
     - key: holes-function
       name: holes
       description: Issues with at least one acceptance criterion that has no verification act.
       function: jqlHoles
+      arguments: []
+      operators: []
+      types: [issue]
     - key: perforated-function
       name: perforated
       description: Issues with a criterion changed after its last verification.
       function: jqlPerforated
+      arguments: []
+      operators: []
+      types: [issue]
     - key: dangling-function
       name: dangling
       description: Issues whose verification acts no longer cover anything.
       function: jqlDangling
+      arguments: []
+      operators: []
+      types: [issue]
     - key: uncovered-function
       name: uncovered
       description: Issues with at least one criterion that is not proven.
       function: jqlUncovered
+      arguments: []
+      operators: []
+      types: [issue]
   # Porte optionnelle (TR-30) : elle alerte, elle n'interdit jamais (§5, §14).
   jira:workflowValidator:
     - key: weave-gate
@@ -115,17 +130,13 @@ modules:
   confluence:globalPage:
     - key: certificates-page
       title: Weave certificates
+      route: weave-certificates
       resource: main
       resolver:
         function: resolver
       render: native
-      icon: resource:icon;icon.svg
-  confluence:macro:
-    - key: bulletin-macro
-      title: Weave bulletin
-      resource: main
-      resolver:
-        function: resolver
+  # Pas de `confluence:macro` : ce module n'existe pas dans la CLI 14.2 (il
+  # faudrait une interface Custom UI en dossier). Le bulletin se lit dans Jira.
   # Pont signé depuis les pipelines : la source de la force « machine » (§7).
   webtrigger:
     - key: ci-results
@@ -441,21 +452,7 @@ modules:
   rovo:mcp:
     - key: trame-mcp
       name: Trame
-      tools:
-        - get-coverage
-        - list-holes
-        - list-perforations
-        - list-dangling
-        - get-criterion
-        - propose-test
-        - propose-reformulation
-        - confirm-link
-        - reject-link
-        - get-bulletin
-        - get-certificate
-        - list-unverifiable
-        - get-zones-risk
-        - get-coverage-timeline
+      tools: [get-coverage, list-holes, list-perforations, list-dangling, get-criterion, propose-test, propose-reformulation, confirm-link, reject-link, get-bulletin, get-certificate, list-unverifiable, get-zones-risk, get-coverage-timeline]
 resources:
   # Entrée UI Kit : les onze écrans (§17), en souche jusqu'au lot L9.
   - key: main
@@ -468,32 +465,27 @@ resources:
 
 permissions:
   scopes:
-    # Lire les tickets, champs et descriptions : les six gîtes d'un critère (§6).
+    # Jira : les six gîtes d'un critère (§6), son texte, et ce que l'app écrit.
     - read:jira-work
-    # Lire les détails des tickets : texte des critères et empreintes.
     - read:issue-details:jira
-    # Écrire ce que l'app possède : commentaires de signalement et propriétés
-    # des champs Trame / Trous / Perforations.
-    - write:issue-details:jira
-    # Lire l'utilisateur courant : la piste d'audit d'un acte, jamais un classement.
+    - write:jira-work
+    - write:issue:jira
+    # L'utilisateur : la piste d'audit d'un acte, jamais un classement.
     - read:me
-    # Lire les utilisateurs : nommer l'auteur d'une déclaration dans l'audit.
     - read:jira-user
-    # Lire Confluence : checklists comme critères, pages comme artefacts (§6).
+    # Confluence : checklists comme critères, certificat de trame (§12.5).
     - read:confluence-content.all
-    # Écrire le certificat de trame dans Confluence (§12.5).
     - write:confluence-content
     # Le graphe, un droit par type d'objet (§10) : un droit manquant vide le
-    # résultat sans erreur, et l'écran de couverture le déclare (§18).
-    - graph:work-item
-    - graph:test-plan
-    - graph:test-run
-    - graph:test-execution
-    - graph:test-status
-    - graph:commit
-    - graph:pull-request
-    - graph:deployment
-    - graph:document
-    - graph:project
-    - graph:software-service
-    - graph:atlassian-user
+    # résultat sans erreur (§18). Les objets de test du graphe n'ont aucune
+    # portée publiable (13/11/2026) : les actes sont lus là où ils existent.
+    - read:graph:issue:jira
+    - read:graph:work-item:external
+    - read:graph:project:jira
+    - read:graph:commit:external
+    - read:graph:pull-request:external
+    - read:graph:deployment:external
+    - read:graph:document:external
+    - read:graph:page:confluence
+    - read:graph:user:atlassian
+    - read:graph:service:external

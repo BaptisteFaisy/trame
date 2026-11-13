@@ -1,8 +1,8 @@
-import type { ActorContext, Deps } from '../ports.js';
-import type { CriterionKind, MetricRule } from '../types.js';
-import { DEFAULT_SETTINGS } from '../defaults.js';
-import { readPersonFilter, readScope, refusal } from './common.js';
-import type { Refusal } from './common.js';
+import type { ActorContext, Deps } from '../ports';
+import type { CriterionKind, MetricRule } from '../types';
+import { DEFAULT_SETTINGS } from '../defaults';
+import { readPersonFilter, readScope, refusal } from './common';
+import type { Refusal } from './common';
 
 /** Les sept types de critère : les poids que l'équipe peut choisir (§11). */
 const KINDS: readonly CriterionKind[] = [

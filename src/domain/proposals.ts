@@ -20,7 +20,7 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
+import type { Deps } from '../ports';
 import type {
   Criterion,
   CriterionKind,
@@ -28,9 +28,9 @@ import type {
   Proposal,
   ProposalPayload,
   VerificationForm,
-} from '../types.js';
-import { falsifiabilityOf } from './falsifiability.js';
-import { proposeReformulation } from './reformulation.js';
+} from '../types';
+import { falsifiabilityOf } from './falsifiability';
+import { proposeReformulation } from './reformulation';
 
 /** Les critères dont la vérification est technique : un test automatisé suffit. */
 const TECHNICAL_KINDS: readonly CriterionKind[] = [

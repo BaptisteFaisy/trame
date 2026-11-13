@@ -18,9 +18,9 @@ import type {
   Perforation,
   ScopeType,
   Verification,
-} from '../types.js';
-import type { Lang } from '../i18n/index.js';
-import { label } from '../i18n/index.js';
+} from '../types';
+import type { Lang } from '../i18n/index';
+import { label } from '../i18n/index';
 
 /** A vertical thread: one criterion of the scope. */
 export interface WarpThread {

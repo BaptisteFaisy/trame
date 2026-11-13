@@ -25,10 +25,10 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import { conclusion, hasNoCriterion, percent } from '../domain/percent.js';
-import type { Conclusion } from '../domain/percent.js';
-import { daysBetween } from '../domain/perforations.js';
-import { explainScore } from '../domain/metric.js';
+import { conclusion, hasNoCriterion, percent } from '../domain/percent';
+import type { Conclusion } from '../domain/percent';
+import { daysBetween } from '../domain/perforations';
+import { explainScore } from '../domain/metric';
 import type {
   Coverage,
   Dangling,
@@ -38,10 +38,10 @@ import type {
   Perforation,
   PerforationClass,
   Strength,
-} from '../types.js';
-import type { Lang } from '../i18n/index.js';
-import { label } from '../i18n/index.js';
-import { stateWord, text } from './labels.js';
+} from '../types';
+import type { Lang } from '../i18n/index';
+import { label } from '../i18n/index';
+import { stateWord, text } from './labels';
 
 /* ------------------------------------------------------------------ motifs */
 

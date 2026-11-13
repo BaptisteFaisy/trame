@@ -20,19 +20,19 @@
  */
 import Resolver from '@forge/resolver';
 import { Queue } from '@forge/events';
-import { createAppDeps } from './deps.js';
-import type { Deps, JobQueue, RecomputeMessage } from './ports.js';
-import type { ActorContext } from './ports.js';
-import { registerScreens } from './handlers/resolver.js';
-import { ACTION_KEYS, runAction } from './handlers/dispatch.js';
-import { onJiraEvent } from './handlers/events.js';
-import { onScheduledTick } from './handlers/scheduled.js';
-import { onRecomputeMessage } from './handlers/consumer.js';
-import { handleCiResults } from './handlers/ingest.js';
-import type { CiWebRequest, CiWebResponse } from './handlers/ingest.js';
-import { createValidator } from './handlers/validator.js';
-import type { WeaveVerdict } from './handlers/validator.js';
-import { jqlDangling, jqlHoles, jqlPerforated, jqlUncovered } from './handlers/jql.js';
+import { createAppDeps } from './deps';
+import type { Deps, JobQueue, RecomputeMessage } from './ports';
+import type { ActorContext } from './ports';
+import { registerScreens } from './handlers/resolver';
+import { ACTION_KEYS, runAction } from './handlers/dispatch';
+import { onJiraEvent } from './handlers/events';
+import { onScheduledTick } from './handlers/scheduled';
+import { onRecomputeMessage } from './handlers/consumer';
+import { handleCiResults } from './handlers/ingest';
+import type { CiWebRequest, CiWebResponse } from './handlers/ingest';
+import { createValidator } from './handlers/validator';
+import type { WeaveVerdict } from './handlers/validator';
+import { jqlDangling, jqlHoles, jqlPerforated, jqlUncovered } from './handlers/jql';
 
 /** The queue key must be the one of the `consumer` module in the manifest. */
 export const QUEUE_KEY = 'trame-recompute';

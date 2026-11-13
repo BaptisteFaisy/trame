@@ -1,5 +1,5 @@
-import type { ActorContext, Deps } from '../ports.js';
-import { buildCertificate, certificateToMarkdown } from '../domain/certificate.js';
+import type { ActorContext, Deps } from '../ports';
+import { buildCertificate, certificateToMarkdown } from '../domain/certificate';
 import {
   coverageOf,
   envelope,
@@ -8,7 +8,7 @@ import {
   messagesOf,
   readPersonFilter,
   readScope,
-} from './common.js';
+} from './common';
 
 /**
  * Contenu du certificat de trame, destiné à Confluence (§12.5).

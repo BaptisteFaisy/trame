@@ -19,7 +19,7 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { Deps } from '../ports.js';
+import type { Deps } from '../ports';
 import type {
   BlindSpot,
   Coverage,
@@ -34,14 +34,14 @@ import type {
   ScopeType,
   Verification,
   ZoneRisk,
-} from '../types.js';
-import { computeCoverage } from '../domain/coverage.js';
-import { detectDangling } from '../domain/dangling.js';
-import { detectPerforations } from '../domain/perforations.js';
-import { conclusion, hasNoCriterion, percent } from '../domain/percent.js';
-import type { Conclusion } from '../domain/percent.js';
-import { t } from '../i18n/index.js';
-import type { MessageKey } from '../i18n/index.js';
+} from '../types';
+import { computeCoverage } from '../domain/coverage';
+import { detectDangling } from '../domain/dangling';
+import { detectPerforations } from '../domain/perforations';
+import { conclusion, hasNoCriterion, percent } from '../domain/percent';
+import type { Conclusion } from '../domain/percent';
+import { t } from '../i18n/index';
+import type { MessageKey } from '../i18n/index';
 
 /* ------------------------------------------------------------- le périmètre */
 

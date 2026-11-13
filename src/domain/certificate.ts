@@ -19,7 +19,7 @@ import type {
   Link,
   Perforation,
   Verification,
-} from '../types.js';
+} from '../types';
 
 export interface CertificateInput {
   scope: string;

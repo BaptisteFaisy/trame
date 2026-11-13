@@ -15,10 +15,10 @@
  *
  * Règles : fichiers < 500 lignes, fonctions < 50 lignes.
  */
-import type { GraphObject } from '../ports.js';
-import type { Strength, Verification, VerificationForm } from '../types.js';
-import { DEFAULT_STRENGTH_BY_FORM } from '../defaults.js';
-import { normalizeStatus } from './common.js';
+import type { GraphObject } from '../ports';
+import type { Strength, Verification, VerificationForm } from '../types';
+import { DEFAULT_STRENGTH_BY_FORM } from '../defaults';
+import { normalizeStatus } from './common';
 
 /**
  * Ce qui est journalisé quand un objet est écarté. L'appel (src/ingest/graph.ts)
