@@ -79,7 +79,7 @@ describe('schéma (§19)', () => {
       'metric_rule',
       'witness',
       'coverage_event',
-      'cursor',
+      'scan_cursor',
       'budget',
     ]);
   });
