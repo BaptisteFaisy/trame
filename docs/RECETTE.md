@@ -78,7 +78,7 @@ Les vérifications, minute par minute (résultats mesurés le 13 novembre 2026) 
 |---|---|---|---|
 | 0:00 | la suite passe | `npm test` | `Test Files 49 passed (49)` · `Tests 428 passed (428)` |
 | 0:30 | les types passent | `npm run typecheck` | aucune sortie, code 0 |
-| 1:00 | la garde de taille passe | `npm run check:limits` | `219 fichier(s) audité(s), limite 500 lignes.` puis `OK` |
+| 1:00 | la garde de taille passe | `npm run check:limits` | `220 fichier(s) audité(s), limite 500 lignes.` puis `OK` |
 | 1:30 | les quatorze outils répondent | `npx vitest run tests/contract/entry-points.test.ts` | 5 verts |
 | 2:00 | les onze écrans répondent | `npx vitest run tests/handlers/screens.test.ts` | 3 verts |
 | 2:30 | les déclencheurs, le consumer, le pont signé | `npx vitest run tests/handlers/triggers.test.ts` | 14 verts |
@@ -165,9 +165,10 @@ démo sur ce même moteur : `computeCoverage`, `detectPerforations`,
 
 ## 4. Les souches qui restent (deux, assumées)
 
-**1. L'entrée UI Kit 2 — `src/ui/frontend/index.tsx` (28 lignes).**
+**1. L'entrée UI Kit 2 — `src/ui/frontend/index.tsx` (43 lignes).**
 Elle rend le **registre** des onze écrans (`screenRegistry()`), chaque clé
-marquée `stub` : `@forge/react` v10 n'expose pas `render`, donc un module
+marquée `implemented: true, rendered: false` : l'écran existe côté serveur, il
+n'est pas monté ici — `@forge/react` v10 n'expose pas `render`, donc un module
 `render: native` ne monte pas d'arbre React testable. Ce qui n'est **pas**
 souche : les onze view-models (`src/viewmodel/`) et les onze handlers
 (`src/handlers/`), réels et testés (`tests/handlers/screens.test.ts`, 3 verts).
