@@ -1,9 +1,14 @@
 # SUBMISSION — Trame
 
-> Fiche de soumission Codegeist 2026, rédigée le 12 novembre 2026, base
-> `origin/main` @ `b3f8cce` (`b3f8cced169c9d10f92f94ee9b72c4930122df12`).
+> Fiche de soumission Codegeist 2026, rédigée le 12 novembre 2026 et remise à
+> jour le 13 novembre 2026 sur la base `origin/main` @ `7c468f7`
+> (`7c468f7bdb33d9d731b71551e2d30a8e7174e657`).
 > Tout ce qui est écrit ici est vérifiable dans le dépôt ; ce qui n'est pas
 > encore écrit dans le dépôt est marqué comme tel.
+>
+> Mesures du 13 novembre 2026 sur cette base : `npx vitest run` → **428 tests
+> verts, 49 fichiers** ; `forge lint` → **0 erreur, 5 avertissements** (CLI 14.2),
+> application `v2.1.0` en environnement `development`.
 
 ## 1. La fiche
 
@@ -60,10 +65,14 @@
   appliqué sans validation).
 - la skill **`before-closing-a-ticket`** est publiée en source ouverte :
   `static/skill/before-closing-a-ticket/SKILL.md`.
-- **état honnête** : le prompt et la configuration sont réels et complets ;
-  les **corps** des quatorze outils renvoient encore `{ notImplemented: … }`
-  (`src/actions/*.ts`), donc l'agent ne répond pas encore de chiffres. Le moteur
-  de domaine qui produira ces chiffres, lui, est écrit et testé.
+- **état honnête** : le prompt et la configuration sont réels et complets, et les
+  **corps des quatorze actions sont écrits** (`src/actions/*.ts`, un fichier par
+  outil, dix-huit fichiers de test dans `tests/actions/`). L'agent répond donc de
+  vrais chiffres, calculés par `src/domain/*` sur les données lues par
+  `src/ingest/*`. Ce qui reste ouvert : les deux contenus **générés** —
+  reformulation d'un critère et brouillon de test — renvoient `notImplemented`
+  (`src/ingest/llm.ts`) ; le cache par empreinte et le budget du modèle, eux,
+  sont réels.
 
 ### MCP
 
@@ -76,10 +85,14 @@
   `INTERNAL_ACTION_KEYS` (4), et une clé inconnue est **refusée**, jamais
   devinée (`src/index.ts` `actionKeyOf`).
 - la surface est **vérifiée par un test** :
-  `npx vitest run tests/contract/entry-points.test.ts` → « expose exactly the
-  fourteen MCP tools of §16 », « keeps four internal actions out of Rovo ».
-- **état honnête** : la surface MCP est réelle et testée ; les **corps** des
-  quatorze outils renvoient `{ notImplemented: … }`.
+  `npx vitest run tests/contract/entry-points.test.ts` → cinq tests, dont
+  « expose exactly the fourteen MCP tools of §16 », « keeps four internal
+  actions out of Rovo », « answers on every action key » et « refuses an
+  unknown action instead of guessing ».
+- **état honnête** : la surface MCP est réelle, testée, et **les quatorze
+  outils répondent** — plus aucune coquille `{ notImplemented: … }` dans
+  `src/actions/` (seul `src/ingest/llm.ts` en porte encore, pour les deux
+  contenus générés cités plus haut).
 
 ### Marketplace
 
@@ -95,94 +108,107 @@
   forme qui ne se déploie pas (le bulletin se lit dans Jira).
 - `LICENSE` (MIT), `README.md`, et le dossier `docs/` (spécification complète,
   contrats, architecture, recette, instructions aux jugés, scénario vidéo).
-- **état honnête** : l'application Forge existe et tourne — `forge create`
-  (espace développeur `laddition`), `forge lint` sans erreur,
-  `forge deploy -e development`, puis installation sur le site réel
-  `one-atlas-cndz.atlassian.net` en **Jira** et en **Confluence**
-  (identifiant `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51`).
+- **état honnête** : l'application Forge existe et tourne —
+  identifiant `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51`,
+  version `2.1.0` en environnement `development`, `forge lint` sans erreur
+  (5 avertissements, CLI 14.2), installée sur le site réel
+  `one-atlas-cndz.atlassian.net` en **Jira** et en **Confluence** (page
+  « weave-certificates »).
   Le bundleur Forge (webpack/ts-loader) ne résout pas les imports relatifs
-  `./x.js` : le code source les écrit sans extension (convention Forge). Les modules
-  `trigger`, `scheduledTrigger`, `consumer` et `webtrigger` sont déclarés dans
-  le manifeste et câblés dans `src/index.ts`, mais leurs corps restent des
-  souches dans `origin/main` (ils arrivent avec `origin/lot/l10-triggers`).
+  `./x.js` : le code source les écrit sans extension (convention Forge).
+- les modules `trigger` (événement de ticket), `scheduledTrigger` (recalcul
+  nocturne), `consumer` (file de recalcul par tranches), `webtrigger` (pont
+  signé des pipelines), le `jira:workflowValidator` et les quatre
+  `jira:jqlFunction` sont déclarés dans le manifeste **et câblés avec leurs
+  corps réels** dans `src/index.ts` / `src/handlers/*`
+  (`tests/handlers/triggers.test.ts`, 14 tests) : ce ne sont plus des souches.
 
 ## 3. L'architecture en dix lignes
 
-1. `src/index.ts` — câblage Forge **gelé** : handler, dispatch, webtrigger,
-   trigger, scheduledTrigger, consumer, validateur, quatre fonctions JQL.
-2. `src/handlers/*` — le dispatch, le resolver (les onze clés d'écran du §17)
-   et les points d'entrée Forge (déclencheur, consumer, pont signé webtrigger,
-   validateur, quatre fonctions JQL). Onze clés d'écran renvoient une souche ;
-   le déclencheur, le consumer, le pont signé, les fonctions JQL et le
-   validateur sont les souches du socle dans `origin/main` (leurs corps arrivent
-   avec le lot `origin/lot/l10-triggers`, non mergé).
-3. `src/actions/*` — les quatorze outils MCP et quatre actions internes, un
-   fichier par outil, signature `run(deps, payload, actor)` ; corps en souche.
-4. `src/domain/*` — **logique pure**, écrite et testée : tissage, couverture,
+1. `src/index.ts` — câblage Forge **réel** : handler du resolver, dispatch des
+   actions, pont signé webtrigger, trigger d'événement de ticket,
+   scheduledTrigger, consumer de recalcul, validateur de workflow et quatre
+   fonctions JQL. Une clé inconnue est refusée.
+2. `src/handlers/*` — le dispatch, le resolver et les points d'entrée Forge. Les
+   **onze clés d'écran du §17** sont déclarées dans l'ordre et chacune rend un
+   view-model réel (`src/handlers/resolver.ts`) ; déclencheur, consumer, pont
+   signé, quatre fonctions JQL et validateur ont leurs corps réels, testés.
+3. `src/actions/*` — les **quatorze outils MCP et quatre actions internes**, un
+   fichier par outil, signature `run(deps, payload, actor)` ; les dix-huit corps
+   sont écrits et chacun a son fichier de test.
+4. `src/viewmodel/*` — treize modules purs qui préparent l'affichage des onze
+   écrans : carte de trame, fiche critère, trous, perforations, fils détendus,
+   bulletin, certificat, file de validation, zones à risque, couverture,
+   chronologie, plus les libellés et l'outillage partagés.
+5. `src/domain/*` — **logique pure**, écrite et testée : tissage, couverture,
    perforations, fils détendus, falsifiabilité, métré, zones, bulletin,
    certificat, témoin, chronologie. Jamais de `@forge/*`.
-5. `src/ports.ts` — **la frontière unique** : passerelles Jira, Teamwork Graph,
-   Bitbucket, Confluence, pipeline, LLM, secrets, et le `TrameStore`.
-6. `src/collect/*` — les **six gîtes** d'un critère (champ, description,
+6. `src/ports.ts` et `src/deps.ts` — **la frontière unique** : passerelles Jira,
+   Teamwork Graph, Bitbucket, Confluence, pipeline, LLM, secrets, et le
+   `TrameStore`. Tout est injectable, donc tout est testable sans réseau.
+7. `src/collect/*` — les **six gîtes** d'un critère (champ, description,
    tableau, page Confluence, ticket de test, pièce jointe), l'**empreinte
    stable**, le dédoublonnage et la renumérotation.
-7. `src/ingest/*` — les actes de vérification : graphe, Bitbucket, commentaires,
-   pipeline signé (réels), Confluence et génération LLM (souches ; le cache par
-   empreinte et le budget du LLM sont réels).
-8. `src/db/*` — Forge SQL, **quinze tables** (§19), mappings aller-retour
-   testés, aucune statistique par personne.
-9. `src/i18n/*` et `src/ui/frontend/index.tsx` — dictionnaires EN/FR à parité
-   vérifiée, resource UI (souche jusqu'au lot L9).
-10. `src/sample/*` et `tests/helpers/*` — le projet de démonstration du §26,
-    le scénario `TRAME-1`, store en mémoire, passerelles fictives, horloge
-    injectable : **tout est testable sans Forge et sans réseau**.
+8. `src/ingest/*` — les actes de vérification : graphe Teamwork Graph,
+   Bitbucket, commentaires, pipeline signé et tickets Jira sont **réels** ;
+   le connecteur Confluence est en **repli explicite** (lecture vide, écriture
+   du certificat non câblée, journalisée) et la génération LLM est une souche
+   marquée `notImplemented` — cache par empreinte et budget réels.
+9. `src/ui/frontend/index.tsx` et `src/i18n/*` — l'entrée UI Kit 2 existe et
+   compile, mais elle **rend le registre des onze clés**, pas les écrans :
+   souche assumée, `@forge/react` v10 n'exposant pas `render`. Les dictionnaires
+   EN/FR sont à parité vérifiée par le compilateur et par
+   `tests/i18n/dictionary.test.ts`.
+10. `src/sample/*` et `tests/helpers/*` — le projet de démonstration du §26, le
+    scénario `TRAME-1`, store en mémoire, passerelles fictives, horloge
+    injectable : **tout est testable sans Forge et sans réseau** — 428 tests,
+    49 fichiers.
 
 ## 4. Ce qui est prêt, ce qui reste
 
-### Prêt et vérifié aujourd'hui (sur `origin/main`)
+### Prêt et vérifié aujourd'hui (sur `origin/main` @ `7c468f7`)
 
 | Domaine | Preuve |
 |---|---|
-| Contrats gelés : types, ports, valeurs par défaut, seuils | `src/types.ts`, `src/ports.ts`, `src/defaults.ts` |
-| Logique de domaine du §24 (17 points sur 20 avec test nominatif) | `src/domain/*` ; `tests/domain/*.test.ts` |
+| Contrats gelés : types, ports, valeurs par défaut, seuils | `src/types.ts`, `src/ports.ts`, `src/defaults.ts` ; `tests/contract/honesty.test.ts` |
+| Logique de domaine du §24 (les 20 points portent au moins un test nommé d'après le point) | `src/domain/*` ; `tests/domain/*.test.ts` (12 fichiers) |
 | Extraction multi-origine (§6) | `src/collect/*` ; `tests/collect/extraction.test.ts` (27 tests) |
-| Actes de vérification : graphe, Bitbucket, commentaires, pipeline | `src/ingest/*` ; `tests/ingest/*.test.ts` |
+| Actes de vérification : graphe, Bitbucket, commentaires, pipeline | `src/ingest/*` ; `tests/ingest/*.test.ts` (5 fichiers, dont `probe.test.ts` 9 tests) |
 | Persistance : quinze tables, mappings aller-retour, aucun score par personne | `src/db/*` ; `tests/db/persistence.test.ts` (13 tests) |
 | Détection de secrets, sans jamais recopier la valeur | `src/domain/secrets.ts` ; `tests/domain/secrets.test.ts` (18 tests) |
-| Surface MCP et écrans : quatorze outils, quatre actions internes, onze écrans | `src/handlers/dispatch.ts`, `src/handlers/resolver.ts` ; `tests/contract/entry-points.test.ts` (5 tests) |
-| Projet de démonstration §26 | `src/sample/demo-project.ts` ; `tests/sample/demo-project.test.ts` (10 tests) |
+| Les 14 outils MCP et 4 actions internes, corps réels | `src/actions/*` (20 fichiers : dix-huit outils, plus `common.ts` et `link-decision.ts`) ; `tests/actions/` (18 fichiers de test, un par outil) ; `tests/contract/entry-points.test.ts` (5 tests) |
+| Les 11 écrans du §17 : view-models et handlers réels | `src/viewmodel/*`, `src/handlers/*` ; `tests/handlers/screens.test.ts`, `tests/viewmodel/weave-map.test.ts` |
+| Déclencheur, consumer, webtrigger signé, 4 JQL, validateur | `src/index.ts`, `src/handlers/*` ; `tests/handlers/triggers.test.ts` (14 tests) |
+| Projet de démonstration §26 et site public | `src/sample/demo-project.ts` (10 tests) ; `site/` et `tests/site/` (12 tests) qui exécutent le vrai moteur |
 | Manifeste Forge complet, agent Rovo, skill | `manifest.yml`, `static/agent/prompt.md`, `static/skill/` |
-| Pipeline CI : `ci`, `ci-budget`, `couche0`, file Mergify, budget 5 min | `docs/CI.md`, `tools/` |
+| Pipeline CI : `ci`, `ci-budget`, `couche0`, file Mergify, budget 5 min, runner `r630-trame-01` | `docs/CI.md`, `tools/`, `.github/workflows/` |
+| Agent de conflits « hermes » sur InferHub | `docs/CONFLICTS.md` ; PR #19 mergée, PR #21 `CONFLICTING` réconciliée par l'agent |
 
-Bilan : **26 fichiers de test, 339 tests, tout vert** (`npm test`).
+Bilan mesuré le 13 novembre 2026 : **49 fichiers de test, 428 tests, tout vert**
+(`npx vitest run`).
 
-### Écrit, non mergé (branche publique)
+### Ce qui reste réellement ouvert
 
-| Branche | Contenu | Mesuré |
+| Chantier | Où c'est | État exact |
 |---|---|---|
-| `origin/lot/l10-triggers` | les déclencheurs, le consumer, le pont signé et les fonctions JQL | commit `261de13` ; `tests/handlers/triggers.test.ts` (233 lignes) |
-| `origin/lot/l11b-site` | le site public de démonstration et la démo vivante | commit `fec1ba8` ; `site/` + `tests/site/demo-numbers.test.ts`, `demo-render.test.tsx` |
-
-### Ce qui reste à écrire
-
-| Lot | Contenu | Pourquoi c'est prioritaire |
-|---|---|---|
-| L8 outils | les corps des quatorze outils MCP et quatre actions internes | sans quoi les surfaces ne répondent rien |
-| L9 écrans | les onze écrans UI Kit 2 | sans quoi la démo n'est pas jouable |
-| L10 (reste) | le connecteur Confluence (écriture du certificat), la génération LLM, et le merge des déclencheurs (sur `origin/lot/l10-triggers`) | sans quoi le certificat n'atterrit pas et le recalcul ne se déclenche pas |
-| L11b (fin) | merger le site public dans `main` | sans quoi les jugés n'ont pas de page publique |
-| Cas nominatifs §24.1, §24.18, §24.19 | trois tests de recette numérotés | discipliner la recette, pas combler la logique |
-| déploiement | `forge create` puis `forge deploy` | sans quoi rien ne tourne dans Jira |
+| Entrée UI Kit 2 : monter les onze écrans au lieu de lister les clés | `src/ui/frontend/index.tsx` | souche assumée — les écrans existent en view-models, l'entrée ne les rend pas ; `@forge/react` v10 n'expose pas `render` |
+| Écriture du certificat dans Confluence | `src/ingest/confluence.ts` | `publishCertificate` renvoie `null` et journalise le repli §21 : le certificat est produit dans l'app puis exporté |
+| Génération LLM : reformulation d'un critère, brouillon de test | `src/ingest/llm.ts` | `notImplemented` explicite ; cache par empreinte et budget réels |
+| Vidéo de démonstration | `docs/VIDEO-SCRIPT.md` | plan minuté prêt ; **la vidéo n'est pas tournée** |
+| Publication Marketplace | app Forge `v2.1.0` en `development` | installée en dev, pas soumise à la Marketplace ; l'entrée UI Kit 2 ne monte pas encore les écrans |
+| Rafraîchissement des états de recette et du guide du jury | `docs/RECETTE.md`, `docs/JUDGES.md` | rédigés sur la base `b3f8cce` ; ils annoncent encore des souches d'écrans et d'outils, corrigées depuis L8/L9b |
 
 ## 5. Les liens
 
 | Lien | Où | État |
 |---|---|---|
-| Dépôt | https://github.com/Tradoooo/trame | public ; base `origin/main` @ `b3f8cce` |
-| Recette | [`docs/RECETTE.md`](RECETTE.md) | prêt : les vingt points, états vérifiés |
-| Instructions aux jugés | [`docs/JUDGES.md`](JUDGES.md) | prêt |
+| Dépôt | https://github.com/Tradoooo/trame | public ; base `origin/main` @ `7c468f7` |
+| Démonstration publique | https://tradoooo.github.io/trame/ | **en ligne** ; la page exécute le vrai moteur (`site/`, mesuré par `tests/site/`, 12 tests) |
+| App Forge déployée | `one-atlas-cndz.atlassian.net` (Jira + Confluence) | déployée en `development`, `v2.1.0`, ARI `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51` |
+| Recette | [`docs/RECETTE.md`](RECETTE.md) | vingt points, commandes exactes ; états mesurés au 12/11 sur `b3f8cce`, à rafraîchir depuis L8/L9b |
+| Instructions aux jugés | [`docs/JUDGES.md`](JUDGES.md) | en dépôt, base `b3f8cce` |
 | Scénario de la vidéo | [`docs/VIDEO-SCRIPT.md`](VIDEO-SCRIPT.md) | plan minuté prêt ; **la vidéo n'est pas tournée** |
-| Démonstration | site public (`origin/lot/l11b-site`) et app déployée sur un site de développement | site **en branche, non mergé** ; l'app déployée **à publier** |
+| Conflits et agent hermes | [`docs/CONFLICTS.md`](CONFLICTS.md) | en dépôt, preuves PR #19 et #21 |
 | Spécification | [`docs/CAHIER-DES-CHARGES.md`](CAHIER-DES-CHARGES.md) | en dépôt |
 | Architecture | [`docs/ARCHITECTURE.md`](ARCHITECTURE.md), [`docs/CONTRACTS.md`](CONTRACTS.md) | en dépôt |
 
@@ -192,14 +218,14 @@ Bilan : **26 fichiers de test, 339 tests, tout vert** (`npm test`).
 |---|---|---|---|
 | 1 | nom public, slogan, catégorie | §1 de cette fiche | fait |
 | 2 | README : l'idée, le vocabulaire, ce que l'app ne fait pas, l'état du chantier | `README.md` | fait |
-| 3 | recette des vingt points, avec la commande exacte et l'état réel | `docs/RECETTE.md` | fait |
+| 3 | recette des vingt points, avec la commande exacte et l'état réel | `docs/RECETTE.md` | en dépôt ; les 20 points ont un test, mais les états affichés datent de `b3f8cce` — **à rafraîchir** |
 | 4 | jeu de données de démonstration | `src/sample/demo-project.ts` (§26, testé) | fait |
 | 5 | scénario de la vidéo minuté et liste des captures | `docs/VIDEO-SCRIPT.md` | fait (plan) ; **la vidéo reste à tourner** |
-| 6 | instructions aux jugés, y compris l'installation en cinq minutes | `docs/JUDGES.md` | fait |
-| 7 | application déployée sur un site de développement, démonstration jouable | à faire au gel du 15 décembre | **à faire** |
-| 8 | liens de démonstration et de vidéo publiés dans la fiche de soumission | §5 | **à faire** (URL à confirmer) |
-| 9 | bonus Teamwork Graph, Agents Rovo, MCP, Marketplace cochés, avec la preuve dans le dépôt | §2 | fait (permissions, agent, prompt, skill, quatorze outils et test de surface dans le dépôt) |
-| 10 | discipline d'honnêteté opposable | §5 et §14 du cahier des charges, tests de contrat | fait |
+| 6 | instructions aux jugés, y compris l'installation en cinq minutes | `docs/JUDGES.md` | en dépôt ; base `b3f8cce`, **à rafraîchir** |
+| 7 | application déployée sur un site de développement | `one-atlas-cndz.atlassian.net`, `v2.1.0` dev | **fait** (déployée et installée) ; la démo reste partielle : l'entrée UI Kit 2 liste les écrans au lieu de les monter |
+| 8 | liens de démonstration et de vidéo publiés dans la fiche de soumission | §5 | démonstration **fait** (site public en ligne) ; vidéo **à faire** |
+| 9 | bonus Teamwork Graph, Agents Rovo, MCP, Marketplace cochés, avec la preuve dans le dépôt | §2 | fait : permissions et rectification TWG, agent `le-fil`, prompt, skill, 14 outils + 4 actions internes avec leurs corps et leurs tests, manifeste de 18 types de modules |
+| 10 | discipline d'honnêteté opposable | §5 et §14 du cahier des charges ; `tests/contract/honesty.test.ts` | fait |
 | 11 | licence | `LICENSE` (MIT) | fait |
 
 ## 7. Ce que le jury retiendra
