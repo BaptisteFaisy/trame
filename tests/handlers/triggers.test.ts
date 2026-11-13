@@ -236,9 +236,18 @@ describe('les fonctions JQL', () => {
     const deps = makeDeps();
     (deps.jira as FakeJira).withIssues(ISSUE);
     await onJiraEvent({ issueKey: 'TRAME-1' }, deps);
-    expect(await jqlHoles(deps, ['TRAME-1'])).toEqual(['TRAME-1']);
-    expect(await jqlUncovered(deps, ['TRAME-1'])).toEqual(['TRAME-1']);
-    expect(await jqlPerforated(deps, ['TRAME-1'])).toEqual([]);
-    expect(await jqlDangling(deps, ['TRAME-1'])).toEqual([]);
+    // Jira donne à une fonction JQL l'IDENTIFIANT du ticket ; les registres
+    // sont indexés sur la CLÉ. La fonction rend l'identifiant qu'elle a reçu.
+    expect(await jqlHoles(deps, ['10001'])).toEqual(['10001']);
+    expect(await jqlUncovered(deps, ['10001'])).toEqual(['10001']);
+    expect(await jqlPerforated(deps, ['10001'])).toEqual([]);
+    expect(await jqlDangling(deps, ['10001'])).toEqual([]);
+  });
+
+  it('ne voit rien quand la clé ne correspond à aucun ticket', async () => {
+    const deps = makeDeps();
+    (deps.jira as FakeJira).withIssues(ISSUE);
+    await onJiraEvent({ issueKey: 'TRAME-1' }, deps);
+    expect(await jqlHoles(deps, ['99999'])).toEqual([]);
   });
 });
