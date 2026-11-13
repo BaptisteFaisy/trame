@@ -61,22 +61,85 @@ dit « couvert, par une déclaration, sur un critère périmé depuis 40 jours �
 - elle **ne garde aucun secret** : un critère ou un artefact contenant une clé
   est signalé avant d'être indexé.
 
-## Installer et développer
+## État (13/11/2026, `main @ 7c468f7`)
 
-Prérequis : Node.js 20+, npm, et le CLI Forge (`npm i -g @forge/cli`) pour
-linter et déployer.
+Trame n'est plus un socle : l'app tourne, elle est déployée, et le site public
+exécute le vrai moteur.
+
+- **428 tests verts, 49 fichiers** (`npm test`, quelques secondes à chaud) :
+  domaine, écrans, outils, points d'entrée, tout passe sur des fakes en mémoire,
+  sans réseau.
+- **11 écrans réels** (§17) — carte de trame, fiche critère, explorateur de
+  trous, registre des perforations, file des fils détendus, bulletin, certificat,
+  file de validation, zones à risque, couverture, historique : view-models et
+  handlers complets, enregistrés dans `src/handlers/resolver.ts`.
+- **14 outils MCP réels** (§16) plus **4 actions internes**, un fichier par outil
+  dans `src/actions/`, registre dans `src/handlers/dispatch.ts`.
+- **Déclencheurs réels** : `trigger` sur ticket modifié, `scheduledTrigger`
+  quotidien, `consumer` par tranches (900 s), `webtrigger` signé pour les
+  pipelines, les **4 fonctions JQL** (`holes`, `perforated`, `dangling`,
+  `uncovered`) et le validateur de workflow non bloquant.
+- **App Forge déployée** en `development` (v2.1.0) :
+  `ari:cloud:ecosystem::app/5faa12e1-3a13-4d3c-977e-da1ad6931a51`, installée sur
+  `one-atlas-cndz.atlassian.net`, en Jira et en Confluence.
+- **Site public en ligne** : <https://tradoooo.github.io/trame/> — la démo
+  importe `src/domain/*` et `src/sample/demo-project.ts`, les chiffres affichés
+  sortent du moteur, ils ne sont pas écrits à la main.
+
+Deux souches restent, assumées et nommées :
+
+1. **L'interface UI Kit 2** — `src/ui/frontend/index.tsx` est le registre des
+   écrans, pas les écrans eux-mêmes : `@forge/react` v10 n'expose pas `render`,
+   l'écran affiché reste celui que le manifeste déclare.
+2. **La génération LLM** — `src/ingest/llm.ts` (reformulation, lecture de texte
+   libre) est une souche ; le reste de l'ingestion est réel.
+
+Le découpage en lots L1–L12 est livré ; l'ownership map par fichier reste dans
+[docs/CONTRACTS.md](docs/CONTRACTS.md) §4.
+
+## Voir l'app
+
+- **Site public**, sans installation ni compte : <https://tradoooo.github.io/trame/>
+  (démo jouable : perforations, trous, bulletin, certificat).
+- **App Forge installée** (environnement `development`, v2.1.0) sur
+  `one-atlas-cndz.atlassian.net` :
+  - Jira → menu **Apps** → **Trame** : la page globale, onze écrans derrière une
+    seule route ;
+  - ouverture d'un ticket → panneau **Criteria** (fiche critère) ;
+  - page d'un projet → **Trame** (trame du projet et zones à risque) ;
+  - tableau de bord → gadget **Weave bulletin** ;
+  - Confluence → page globale **Weave certificates** ;
+  - en JQL : `issue in holes()`, `issue in perforated()`, `issue in dangling()`,
+    `issue in uncovered()`.
+
+Pour redéployer : `forge deploy -e development`, puis `forge install --upgrade`
+sur le site (voir la note Node ci-dessous).
+
+## Développer
+
+Prérequis : Node.js (voir la note plus bas), npm, `python3` pour la garde des
+limites, et la CLI Forge pour linter et déployer.
 
 ```bash
-npm ci                # dépendances
-npm test              # vitest run — tests unitaires (fakes en mémoire, aucun réseau)
+npm ci                # dépendances (package-lock)
+npm test              # vitest run — 428 tests, fakes en mémoire, aucun réseau
 npm run typecheck     # tsc --noEmit
-npm run check:limits  # garde : fichiers < 500 lignes
-forge lint            # lint Forge
-forge deploy          # déploiement vers le site de développement
+npm run site:build    # construit le site public (Vite) dans dist/
+npm run check:limits  # garde locale : fichiers < 500 lignes, fonctions < 50
+npm run site:dev      # sert le site public en local, avec le vrai moteur
+forge deploy -e development   # déploiement vers le site de développement
 ```
 
 La CI (checks requis `ci`, `ci-budget`, `couche0`) et la file de merge Mergify
 sont décrites dans [docs/CI.md](docs/CI.md).
+
+**Note Node — `forge lint` en local.** Au 13/11/2026, la CLI Forge (1.9.0) ne
+supporte que `^22.23.4 || ^24.22.1 || >=26.12.1`. Le poste de développement
+tourne Node v26.9.0, hors plage : `forge lint` y répond `nothing to lint`
+(code 0) au lieu de linter — à lire comme un refus silencieux, pas comme un feu
+vert. Avant un lint ou un déploiement : `nvm install 24 && nvm use 24`. Le reste
+(`npm test`, `typecheck`, `site:build`, `check:limits`) tourne sur les Node
+récents sans rien demander.
 
 ## Architecture
 
@@ -86,33 +149,32 @@ sont décrites dans [docs/CI.md](docs/CI.md).
 4. `src/domain/*` — logique pure : tissage, couverture, perforations, fils détendus, falsifiabilité, métré.
 5. `src/ports.ts` — frontière unique (interfaces gelées) ; le domaine n'importe jamais `@forge/*`.
 6. `src/collect/*` — six gîtes de critères ; `src/ingest/*` — actes de vérification.
-7. `src/db/*` — Forge SQL, quinze tables (DDL dans `src/db/schema.ts`).
+7. `src/db/*` — Forge SQL, schéma complet (DDL dans `src/db/schema.ts`).
 8. `tests/helpers/fakes.ts` — store en mémoire, passerelles fictives, horloge fixe : tout est testable sans Forge.
 
 Détail : [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-## État du chantier
+## Structure du dépôt
 
-Le **socle (L0) est posé** : contrats gelés (types, ports, valeurs par défaut),
-points d'entrée en souches, DDL, fakes, pipeline CI. Les écrans ne sont pas
-encore fonctionnels — ce sont des souches. Les lots L1 à L12 restent à livrer
-(ownership map : [docs/CONTRACTS.md](docs/CONTRACTS.md) §4) :
-
-| Lot | Périmètre | Dépend de |
-|---|---|---|
-| L0 socle | contrats, points d'entrée, DDL, pipeline, fakes | — |
-| L1 extraction | `src/collect/*`, `tests/collect/*` | L0 |
-| L2 vérifications | `src/ingest/*`, `tests/ingest/*` | L0 |
-| L3 tissage | `src/domain/links.ts`, `confidence.ts` | L0 |
-| L4 couverture | `src/domain/coverage.ts`, `bulletin.ts`, `witness.ts`, `timeline.ts` | L0 |
-| L5 perforations | `src/domain/perforations.ts`, `dangling.ts` | L0 |
-| L6 falsifiabilité | `src/domain/falsifiability.ts`, `proposals.ts` | L0 |
-| L7 métré | `src/domain/metric.ts`, `zones.ts`, `holes.ts` | L0 |
-| L8 outils et agent | `src/actions/*`, `static/agent/`, `static/skill/` | L3–L7 |
-| L9 écrans | `src/viewmodel/*`, `src/ui/*`, `src/handlers/*` | L3–L7 |
-| L10 certificat | `src/domain/certificate.ts`, triggers et consumers | L4, L5 |
-| L11 site public et démo | `site/**`, `src/sample/**` | L3–L7 |
-| L12 docs de soumission | `docs/RECETTE.md`, `JUDGES.md`, `SUBMISSION.md`, `README.md` | tous |
+| Chemin | Contenu |
+|---|---|
+| `src/domain/` | logique pure : tissage, couverture, perforations, fils détendus, falsifiabilité, métré, certificat, propositions |
+| `src/collect/` | extraction des critères — six gîtes (description, champ, tableau, pièce jointe, Confluence, ticket de test), normalisation, empreinte |
+| `src/ingest/` | actes de vérification : Jira, Confluence, Bitbucket, commentaires, pipelines, requêtes graphe, `llm.ts` (souche) |
+| `src/handlers/` | points d'entrée Forge : resolver (11 écrans), dispatch (outils), trigger, scheduled, consumer, webtrigger, 4 fonctions JQL, validateur |
+| `src/actions/` | un fichier par outil : 14 outils MCP + 4 actions internes |
+| `src/viewmodel/` | mise en forme pour les écrans et les rapports, une clé = un fichier |
+| `src/db/` | Forge SQL : client, dépôts, correspondances et DDL (`schema.ts`) |
+| `src/ui/frontend/` | registre des écrans UI Kit 2 (`index.tsx`) — souche assumée, voir « État » |
+| `src/i18n/` | dictionnaires EN / FR à parité |
+| `src/sample/` | le projet de démonstration que joue le site public |
+| `src/index.ts`, `ports.ts`, `types.ts`, `deps.ts` | câblage Forge gelé, frontière de ports, contrats |
+| `site/` | le site public (Vite + React) ; sa démo importe `src/domain/*`, `npm run site:build` |
+| `static/` | icône, prompt de l'agent Rovo, skill `before-closing-a-ticket` |
+| `tests/` | 49 fichiers, miroir de `src/`, fakes en mémoire et horloge fixe |
+| `tools/` | gardes locales : limites de fichiers et de fonctions, manifeste, workflows |
+| `docs/` | spécification (§n cité partout), contrats, architecture, recette, dossier de soumission |
+| `manifest.yml` | les modules Forge (panneaux, pages, champs, JQL, validateur, déclencheurs, outils) et leurs permissions |
 
 ## Documentation
 
