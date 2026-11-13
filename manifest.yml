@@ -454,7 +454,8 @@ modules:
       name: Trame
       tools: [get-coverage, list-holes, list-perforations, list-dangling, get-criterion, propose-test, propose-reformulation, confirm-link, reject-link, get-bulletin, get-certificate, list-unverifiable, get-zones-risk, get-coverage-timeline]
 resources:
-  # Entrée UI Kit : les onze écrans (§17), en souche jusqu'au lot L9.
+  # Entrée UI Kit : les onze écrans (§17) sont réels côté resolver ; cette
+  # ressource rend le registre (`@forge/react` v10 n'expose pas `render`).
   - key: main
     path: src/ui/frontend/index.tsx
   # Prompt système de l'agent Rovo, icône des modules.
